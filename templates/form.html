@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Information Entry</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #34495e;
+        }
+        .checkbox-section {
+            margin-top: 30px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+        }
+        .checkbox-section h3 {
+            color: #2980b9;
+        }
+        .checkbox-section .questions label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .checkbox-section .questions input {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>General Information Entry</h2>
+    <form method="POST" action="/submit">
+        <label for="floors_above_ground">Number of floors at ground level and above</label>
+        <input type="text" id="floors_above_ground" name="floors_above_ground" required>
+
+        <label for="floors_below_ground">Number of floors entirely below ground level</label>
+        <input type="text" id="floors_below_ground" name="floors_below_ground" required>
+
+        <label for="car_parking_floors">Floors on which car parking is provided</label>
+        <input type="text" id="car_parking_floors" name="car_parking_floors">
+
+        <label for="floor_area_per_floor">Approximate floor area per floor (m²)</label>
+        <input type="text" id="floor_area_per_floor" name="floor_area_per_floor">
+
+        <label for="total_floor_area">Approximate total floor area (m²)</label>
+        <input type="text" id="total_floor_area" name="total_floor_area">
+
+        <label for="ground_floor_area">Approximate floor area on ground floor (m²)</label>
+        <input type="text" id="ground_floor_area" name="ground_floor_area">
+
+        <label for="construction_details">Details of construction and layout</label>
+        <textarea id="construction_details" name="construction_details"></textarea>
+
+        <label for="occupancy">Occupancy</label>
+        <input type="text" id="occupancy" name="occupancy">
+
+        <label for="max_employees">Approximate maximum number of employees at any one time</label>
+        <input type="text" id="max_employees" name="max_employees">
+
+        <label for="max_other_occupants">Approximate maximum number of other occupants at any one time</label>
+        <input type="text" id="max_other_occupants" name="max_other_occupants">
+
+        <label for="total_people_present">Approximate total number of people present in the building at any one time</label>
+        <input type="text" id="total_people_present" name="total_people_present">
+
+        <label for="sleeping_occupants">Sleeping occupants in the building</label>
+        <input type="text" id="sleeping_occupants" name="sleeping_occupants">
+
+        <label for="disabled_employees">Number of disabled employees</label>
+        <input type="text" id="disabled_employees" name="disabled_employees">
+
+        <label for="disabled_occupants">Number of other disabled occupants</label>
+        <input type="text" id="disabled_occupants" name="disabled_occupants">
+
+        <label for="remote_occupants">Occupants in remote areas or lone workers</label>
+        <input type="text" id="remote_occupants" name="remote_occupants">
+
+        <label for="young_persons">Number of young persons (underage workers or visitors)</label>
+        <input type="text" id="young_persons" name="young_persons">
+
+        <label for="specific_groups">Other specific groups of people in the building</label>
+        <textarea id="specific_groups" name="specific_groups"></textarea>
+
+        <label for="past_fires">Fires in the past 10 years</label>
+        <input type="text" id="past_fires" name="past_fires">
+
+        <label for="fire_loss_cost">Cost of fire losses</label>
+        <input type="text" id="fire_loss_cost" name="fire_loss_cost">
+
+        <label for="additional_details">Additional details (if required)</label>
+        <textarea id="additional_details" name="additional_details"></textarea>
+
+        <label for="fire_legislation">Fire safety legislation applicable to this building</label>
+        <textarea id="fire_legislation" name="fire_legislation"></textarea>
+
+        <label for="enforced_by">Who enforces the fire safety legislation?</label>
+        <input type="text" id="enforced_by" name="enforced_by">
+
+        <label for="other_legislation">Other legislation making significant requirements</label>
+        <textarea id="other_legislation" name="other_legislation"></textarea>
+
+        <!-- Fire Safety Measures Section -->
+        <div class="checkbox-section">
+            <h3>Fire Safety Measures</h3>
+        <!-- 7.00 Electronic Sources of Ignition -->
+        <div class="questions">
+            <label>7.01 Are reasonable measures taken to prevent fires of electrical origin?</label>
+            <span><input type="radio" name="electrical_origin" value="yes"> Yes</span>
+            <span><input type="radio" name="electrical_origin" value="no"> No</span>
+            <span><input type="radio" name="electrical_origin" value="na"> N/A</span>
+
+            <h4>7.02 More specifically:</h4>
+            <label>7.02 a) Are fixed installations periodically inspected and tested?</label>
+            <span><input type="radio" name="fixed_inspection" value="yes"> Yes</span>
+            <span><input type="radio" name="fixed_inspection" value="no"> No</span>
+            <span><input type="radio" name="fixed_inspection" value="na"> N/A</span>
+
+            <label>7.02 b) Is portable appliance testing carried out?</label>
+            <span><input type="radio" name="appliance_testing" value="yes"> Yes</span>
+            <span><input type="radio" name="appliance_testing" value="no"> No</span>
+            <span><input type="radio" name="appliance_testing" value="na"> N/A</span>
+
+            <label>7.02 c) Is there suitable control over the use of personal electrical appliances?</label>
+            <span><input type="radio" name="personal_appliances" value="yes"> Yes</span>
+            <span><input type="radio" name="personal_appliances" value="no"> No</span>
+            <span><input type="radio" name="personal_appliances" value="na"> N/A</span>
+
+            <label>7.02 d) Is there suitable limitation of trailing leads and adapters?</label>
+            <span><input type="radio" name="trailing_leads" value="yes"> Yes</span>
+            <span><input type="radio" name="trailing_leads" value="no"> No</span>
+            <span><input type="radio" name="trailing_leads" value="na"> N/A</span>
+
+            <label>Observations:</label>
+            <textarea name="observations_7_02" rows="4" cols="50"></textarea>
+        </div>
+
+        <!-- 8.00 Smoking -->
+        <div class="questions">
+            <label>8.01 Are reasonable measures taken to prevent fires as a result of smoking?</label>
+            <span><input type="radio" name="smoking" value="yes"> Yes</span>
+            <span><input type="radio" name="smoking" value="no"> No</span>
+            <span><input type="radio" name="smoking" value="na"> N/A</span>
+
+            <h4>8.02 More specifically:</h4>
+            <label>8.02 a) Is smoking prohibited in the building?</label>
+            <span><input type="radio" name="smoking_prohibited" value="yes"> Yes</span>
+            <span><input type="radio" name="smoking_prohibited" value="no"> No</span>
+            <span><input type="radio" name="smoking_prohibited" value="na"> N/A</span>
+
+            <label>8.02 b) Is smoking restricted to a designated area?</label>
+            <span><input type="radio" name="smoking_area" value="yes"> Yes</span>
+            <span><input type="radio" name="smoking_area" value="no"> No</span>
+            <span><input type="radio" name="smoking_area" value="na"> N/A</span>
+
+            <label>Observations:</label>
+            <textarea name="observations_8_02" rows="4" cols="50"></textarea>
+        </div>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

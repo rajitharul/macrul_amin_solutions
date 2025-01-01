@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Form</title>
+</head>
+<body>
+    <h2>Edit Form</h2>
+    <form method="POST">
+        <label for="floors_above_ground">Number of floors at ground level and above</label>
+        <input type="text" id="floors_above_ground" name="floors_above_ground" value="{{ form.floors_above_ground }}" required>
+
+        <label for="floors_below_ground">Number of floors entirely below ground level</label>
+        <input type="text" id="floors_below_ground" name="floors_below_ground" value="{{ form.floors_below_ground }}" required>
+
+        <label for="car_parking_floors">Floors on which car parking is provided</label>
+        <input type="text" id="car_parking_floors" name="car_parking_floors" value="{{ form.car_parking_floors }}">
+
+        <label for="floor_area_per_floor">Approximate floor area per floor (m²)</label>
+        <input type="text" id="floor_area_per_floor" name="floor_area_per_floor" value="{{ form.floor_area_per_floor }}">
+
+        <label for="total_floor_area">Approximate total floor area (m²)</label>
+        <input type="text" id="total_floor_area" name="total_floor_area" value="{{ form.total_floor_area }}">
+
+        <label for="ground_floor_area">Approximate floor area on ground floor (m²)</label>
+        <input type="text" id="ground_floor_area" name="ground_floor_area" value="{{ form.ground_floor_area }}">
+
+        <label for="construction_details">Details of construction and layout</label>
+        <textarea id="construction_details" name="construction_details">{{ form.construction_details }}</textarea>
+
+        <label for="occupancy">Occupancy</label>
+        <input type="text" id="occupancy" name="occupancy" value="{{ form.occupancy }}">
+
+        <label for="max_employees">Approximate maximum number of employees at any one time</label>
+        <input type="text" id="max_employees" name="max_employees" value="{{ form.max_employees }}">
+
+        <label for="max_other_occupants">Approximate maximum number of other occupants at any one time</label>
+        <input type="text" id="max_other_occupants" name="max_other_occupants" value="{{ form.max_other_occupants }}">
+
+        <label for="total_people_present">Approximate total number of people present in the building at any one time</label>
+        <input type="text" id="total_people_present" name="total_people_present" value="{{ form.total_people_present }}">
+
+        <label for="sleeping_occupants">Sleeping occupants in the building</label>
+        <input type="text" id="sleeping_occupants" name="sleeping_occupants" value="{{ form.sleeping_occupants }}">
+
+        <label for="disabled_employees">Number of disabled employees</label>
+        <input type="text" id="disabled_employees" name="disabled_employees" value="{{ form.disabled_employees }}">
+
+        <label for="disabled_occupants">Number of other disabled occupants</label>
+        <input type="text" id="disabled_occupants" name="disabled_occupants" value="{{ form.disabled_occupants }}">
+
+        <label for="remote_occupants">Occupants in remote areas or lone workers</label>
+        <input type="text" id="remote_occupants" name="remote_occupants" value="{{ form.remote_occupants }}">
+
+        <label for="young_persons">Number of young persons (underage workers or visitors)</label>
+        <input type="text" id="young_persons" name="young_persons" value="{{ form.young_persons }}">
+
+        <label for="specific_groups">Other specific groups of people in the building</label>
+        <textarea id="specific_groups" name="specific_groups">{{ form.specific_groups }}</textarea>
+
+        <label for="past_fires">Fires in the past 10 years</label>
+        <input type="text" id="past_fires" name="past_fires" value="{{ form.past_fires }}">
+
+        <label for="fire_loss_cost">Cost of fire losses</label>
+        <input type="text" id="fire_loss_cost" name="fire_loss_cost" value="{{ form.fire_loss_cost }}">
+
+        <label for="additional_details">Additional details (if required)</label>
+        <textarea id="additional_details" name="additional_details">{{ form.additional_details }}</textarea>
+
+        <label for="fire_legislation">Fire safety legislation applicable to this building</label>
+        <textarea id="fire_legislation" name="fire_legislation">{{ form.fire_legislation }}</textarea>
+
+        <label for="enforced_by">Who enforces the fire safety legislation?</label>
+        <input type="text" id="enforced_by" name="enforced_by" value="{{ form.enforced_by }}">
+
+        <label for="other_legislation">Other legislation making significant requirements</label>
+        <textarea id="other_legislation" name="other_legislation">{{ form.other_legislation }}</textarea>
+
+        <!-- Fire Safety Measures Section -->
+        <h3>Fire Safety Measures</h3>
+
+        <!-- 7.00 Electronic Sources of Ignition -->
+        <label>7.01 Are reasonable measures taken to prevent fires of electrical origin?</label>
+        <span><input type="radio" name="electrical_origin" value="yes" {% if form.electrical_origin == 'yes' %}checked{% endif %}> Yes</span>
+        <span><input type="radio" name="electrical_origin" value="no" {% if form.electrical_origin == 'no' %}checked{% endif %}> No</span>
+        <span><input type="radio" name="electrical_origin" value="na" {% if form.electrical_origin == 'na' %}checked{% endif %}> N/A</span>
+
+        <h4>7.02 More specifically:</h4>
+        <label>7.02 a) Are fixed installations periodically inspected and tested?</label>
+        <span><input type="radio" name="fixed_inspection" value="yes" {% if form.fixed_inspection == 'yes' %}checked{% endif %}> Yes</span>
+        <span><input type="radio" name="fixed_inspection" value="no" {% if form.fixed_inspection == 'no' %}checked{% endif %}> No</span>
+        <span><input type="radio" name="fixed_inspection" value="na" {% if form.fixed_inspection == 'na' %}checked{% endif %}> N/A</span>
+
+        <label>7.02 b) Is portable appliance testing carried out?</label>
+        <span><input type="radio" name="appliance_testing" value="yes" {% if form.appliance_testing == 'yes' %}checked{% endif %}> Yes</span>
+        <span><input type="radio" name="appliance_testing" value="no" {% if form.appliance_testing == 'no' %}checked{% endif %}> No</span>
+        <span><input type="radio" name="appliance_testing" value="na" {% if form.appliance_testing == 'na' %}checked{% endif %}> N/A</span>
+
+        <label>7.02 c) Is there suitable control over the use of personal electrical appliances?</label>
+        <span><input type="radio" name="personal_appliances" value="yes" {% if form.personal_appliances == 'yes' %}checked{% endif %}> Yes</span>
+        <span><input type="radio" name="personal_appliances" value="no" {% if form.personal_appliances == 'no' %}checked{% endif %}> No</span>
+        <span><input type="radio" name="personal_appliances" value="na" {% if form.personal_appliances == 'na' %}checked{% endif %}> N/A</span>
+
+        <label>7.02 d) Is there suitable limitation of trailing leads and adapters?</label>
+        <span><input type="radio" name="trailing_leads" value="yes" {% if form.trailing_leads == 'yes' %}checked{% endif %}> Yes</span>
+        <span><input type="radio" name="trailing_leads" value="no" {% if form.trailing_leads == 'no' %}checked{% endif %}> No</span>
+        <span><input type="radio" name="trailing_leads" value="na" {% if form.trailing_leads == 'na' %}checked{% endif %}> N/A</span>
+
+        <label>Observations:</label>
+        <textarea name="observations_7_02" rows="4" cols="50">{{ form.observations_7_02 }}</textarea>
+
+        <!-- 8.00 Smoking -->
+        <label>8.01 Are reasonable measures taken to prevent fires as a result of smoking?</label>
+        <span><input type="radio" name="smoking" value="yes" {% if form.smoking == 'yes' %}checked{% endif %}> Yes</span>
+        <span><input type="radio" name="smoking" value="no" {% if form.smoking == 'no' %}checked{% endif %}> No</span>
+        <span><input type="radio" name="smoking" value="na" {% if form.smoking == 'na' %}checked{% endif %}> N/A</span>
+
+        <h4>8.02 More specifically:</h4>
+        <label>8.02 a) Are suitable smoking areas provided and clearly marked?</label>
+        <span><input type="radio" name="smoking_area" value="yes" {% if form.smoking_area == 'yes' %}checked{% endif %}> Yes</span>
+        <span><input type="radio" name="smoking_area" value="no" {% if form.smoking_area == 'no' %}checked{% endif %}> No</span>
+        <span><input type="radio" name="smoking_area" value="na" {% if form.smoking_area == 'na' %}checked{% endif %}> N/A</span>
+
+        <label>Observations:</label>
+        <textarea name="observations_8_02" rows="4" cols="50">{{ form.observations_8_02 }}</textarea>
+
+        <button type="submit">Save Changes</button>
+    </form>
+</body>
+</html>
