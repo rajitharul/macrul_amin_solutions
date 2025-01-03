@@ -6,12 +6,54 @@ import pdfkit
 import pdfkit
 from PyPDF2 import PdfMerger
 from datetime import datetime
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///forms.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
+import fitz  # PyMuPDF
+
+def fill_blanks_with_coordinates(form_id,fill_values):
+    input_pdf = "risk_assestment_matrix.pdf"
+    coordinates = [
+    (179, 423),  # x=100, y=200
+    (271, 423),  # x=200, y=200
+    (362, 423),  # x=300, y=200
+    ]
+
+    output_pdf_path = f"risk_assestment_matrix_output{form_id}.pdf"
+    """
+    Fill blanks in a PDF by placing text at specified coordinates.
+
+    :param input_pdf_path: Path to the input PDF.
+    :param output_pdf_path: Path to save the modified PDF.
+    :param fill_values: List of values to fill in the blanks.
+    :param coordinates: List of tuples with coordinates (x, y) for each value.
+    """
+    # Open the PDF
+    pdf_document = fitz.open(input_pdf)
+    page = pdf_document[0]  # Assuming there is only one page
+
+    # Iterate over each blank to fill
+    for i, (x, y) in enumerate(coordinates):
+        if i < len(fill_values):
+            text = str(fill_values[i])
+            page.insert_text((x, y), text, fontsize=8, color=(0, 0, 0))
+
+    # Save the modified PDF
+    pdf_document.save(output_pdf_path)
+    pdf_document.close()
+
+
+
+
+
+
+
+
 
 
 PRIMARY_QUESTIONS = [
@@ -52,7 +94,11 @@ PRIMARY_QUESTIONS = [
     {"id": "6.04", "question": "The other legislation referred to above is enforced by?"},
     {"id": "6.05", "question": "Is there an alterations notice in force?"},
     {"id": "6.06", "question": "Relevant information and deficiencies observed?"},
-    {"id": "6.07", "question": "Other information?"}
+    {"id": "6.07", "question": "Other information?"},
+    {"id": "6.08", "question": "Risk Likelyhood?"},
+    {"id": "6.09", "question": "Risk Severity?"},
+    {"id": "6.10", "question": "Risk Rating Score?"},
+
 ]
 
 
@@ -143,6 +189,10 @@ def create_form():
         return redirect(url_for('fill_form', form_id=form_id))
     return render_template('create_form.html')
 
+
+
+
+
 @app.route('/form/<form_id>', methods=['GET', 'POST'])
 def fill_form(form_id):
     form = Form.query.filter_by(form_id=form_id).first()
@@ -150,6 +200,18 @@ def fill_form(form_id):
         return "Form not found", 404
 
     if request.method == 'POST':
+        # Save responses to PRIMARY_QUESTIONS
+        for question in PRIMARY_QUESTIONS:
+            answer = request.form.get(f"primary-answer-{question['id']}")
+            new_primary_answer = PrimaryAnswer(
+                form_id=form_id,
+                question_id=question["id"],
+                question=question["question"],
+                answer=answer
+            )
+            db.session.add(new_primary_answer)
+
+        # Save responses to QUESTIONS
         for question in QUESTIONS:
             answer = request.form.get(f"answer-{question['id']}")
             control_measures = request.form.get(f"control-measures-{question['id']}")
@@ -161,52 +223,168 @@ def fill_form(form_id):
                 control_measures=control_measures if answer == "No" else None,
             )
             db.session.add(new_answer)
+
+        # Handle file uploads
+        upload_folder = os.path.join("uploads", form_id)
+        os.makedirs(upload_folder, exist_ok=True)
+        for file in request.files.getlist('images'):
+            if file:
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(upload_folder, filename))
+
         db.session.commit()
         return redirect(url_for('view_form', form_id=form_id))
 
-    return render_template('fill_form.html', form_id=form_id, questions=QUESTIONS)
+    return render_template(
+        'fill_form.html',
+        form_id=form_id,
+        primary_questions=PRIMARY_QUESTIONS,
+        questions=QUESTIONS
+    )
+
+
+
+
 
 @app.route('/form/<form_id>/view')
 def view_form(form_id):
+    primary_answers = PrimaryAnswer.query.filter_by(form_id=form_id).all()
     answers = Answer.query.filter_by(form_id=form_id).all()
     return render_template(
         'view_form.html', 
         form_id=form_id, 
+        primary_answers=primary_answers, 
         answers=answers, 
         current_date=datetime.now().strftime("%Y-%m-%d")
     )
 
+
+
 @app.route('/form/<form_id>/download', methods=['GET'])
 def download_form(form_id):
+    # Fetch PrimaryAnswer and Answer data
+    primary_answers = PrimaryAnswer.query.filter_by(form_id=form_id).all()
     answers = Answer.query.filter_by(form_id=form_id).all()
-    if not answers:
+
+    # Fetch specific PrimaryAnswer values for question IDs 6.08, 6.09, and 6.10
+    specific_primary_answers = PrimaryAnswer.query.filter(
+        PrimaryAnswer.form_id == form_id,
+        PrimaryAnswer.question_id.in_(["6.08", "6.09", "6.10"])
+    ).all()
+
+    # Create a dictionary for quick access
+    specific_values_dict = {answer.question_id: answer.answer for answer in specific_primary_answers}
+
+    # Convert the answers into a numeric array
+    numeric_array = [
+        float(specific_values_dict.get("6.08", 0)),  # Default to 0 if missing
+        float(specific_values_dict.get("6.09", 0)),
+        float(specific_values_dict.get("6.10", 0))
+    ]
+
+    # Call your custom function
+    fill_blanks_with_coordinates(form_id, numeric_array)
+
+    # Ensure data exists
+    if not primary_answers and not answers:
         return "No data found for this form.", 404
 
     # Generate HTML content
-    html_content = render_template('form_download.html', form_id=form_id, answers=answers)
+    html_content = render_template(
+        'form_download.html',
+        form_id=form_id,
+        primary_answers=primary_answers,
+        answers=answers,
+        current_date=datetime.now().strftime("%Y-%m-%d")
+    )
 
-    # Define paths for the PDF
+    # Define paths for the PDFs
     generated_pdf_filename = f"{form_id}_generated.pdf"
     merged_pdf_filename = f"{form_id}_merged.pdf"
+    final_pdf_filename = f"{form_id}_final.pdf"
     generated_pdf_path = os.path.join("downloads", generated_pdf_filename)
     merged_pdf_path = os.path.join("downloads", merged_pdf_filename)
+    final_pdf_path = os.path.join("downloads", final_pdf_filename)
     os.makedirs("downloads", exist_ok=True)
 
     # Convert HTML to PDF
     pdfkit.from_string(html_content, generated_pdf_path)
 
-    # Path to the cover page PDF
+    # Path to the additional PDFs
     cover_page_path = "cover_page.pdf"  # Ensure this file exists in your project directory
+    risk_assessment_matrix_path = f"risk_assestment_matrix_output{form_id}.pdf"  # Ensure this file exists in your project directory
 
-    # Merge the cover page and the generated PDF
+    # Merge the PDFs
     merger = PdfMerger()
-    merger.append(cover_page_path)
+    if os.path.exists(cover_page_path):
+        merger.append(cover_page_path)
     merger.append(generated_pdf_path)
-    merger.write(merged_pdf_path)
+    if os.path.exists(risk_assessment_matrix_path):
+        merger.append(risk_assessment_matrix_path)
+    merger.write(final_pdf_path)
     merger.close()
 
-    # Serve the merged PDF file for download
-    return send_file(merged_pdf_path, as_attachment=True)
+    # Serve the final merged PDF file
+    return send_file(final_pdf_path, as_attachment=True)
+
+
+
+
+@app.route('/form/<form_id>/edit', methods=['GET', 'POST'])
+def edit_form(form_id):
+    form = Form.query.filter_by(form_id=form_id).first()
+    if not form:
+        return "Form not found", 404
+
+    # Fetch existing answers
+    primary_answers = {pa.question_id: pa for pa in PrimaryAnswer.query.filter_by(form_id=form_id).all()}
+    answers = {a.question_id: a for a in Answer.query.filter_by(form_id=form_id).all()}
+
+    if request.method == 'POST':
+        # Update PrimaryAnswers
+        for question in PRIMARY_QUESTIONS:
+            answer = request.form.get(f"primary-answer-{question['id']}")
+            if question['id'] in primary_answers:
+                primary_answers[question['id']].answer = answer
+            else:
+                new_primary_answer = PrimaryAnswer(
+                    form_id=form_id,
+                    question_id=question['id'],
+                    question=question['question'],
+                    answer=answer
+                )
+                db.session.add(new_primary_answer)
+
+        # Update Answers
+        for question in QUESTIONS:
+            answer = request.form.get(f"answer-{question['id']}")
+            control_measures = request.form.get(f"control-measures-{question['id']}")
+            if question['id'] in answers:
+                answers[question['id']].answer = answer
+                answers[question['id']].control_measures = control_measures if answer == "No" else None
+            else:
+                new_answer = Answer(
+                    form_id=form_id,
+                    question_id=question['id'],
+                    question=question['question'],
+                    answer=answer,
+                    control_measures=control_measures if answer == "No" else None,
+                )
+                db.session.add(new_answer)
+
+        db.session.commit()
+        return redirect(url_for('view_form', form_id=form_id))
+
+    return render_template(
+        'edit_form.html',
+        form_id=form_id,
+        primary_questions=PRIMARY_QUESTIONS,
+        primary_answers=primary_answers,
+        questions=QUESTIONS,
+        answers=answers
+    )
+
+
 
 if __name__ == '__main__':
     with app.app_context():

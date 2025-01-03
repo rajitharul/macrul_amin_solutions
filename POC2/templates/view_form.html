@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Fire Risk Assetment Form ID {{ form_id }}</title>
+    <title>Fire Risk Assessment Form ID {{ form_id }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,6 +28,13 @@
             background: white;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 8px;
+        }
+
+        h2 {
+            color: #0078D7;
+            border-bottom: 2px solid #0078D7;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
         }
 
         table {
@@ -78,9 +85,27 @@
     </style>
 </head>
 <body>
-    <header>Form {{ form_id }}</header>
+    <header>Fire Risk Assessment: Form {{ form_id }}</header>
     <div class="container">
-        <h2>Form Details</h2>
+        <!-- Primary Question Answers -->
+        <h2>Primary Information</h2>
+        <table>
+            <tr>
+                <th>Index ID</th>
+                <th>Details</th>
+                <th>Value</th>
+            </tr>
+            {% for primary_answer in primary_answers %}
+            <tr>
+                <td>{{ primary_answer.question_id }}</td>
+                <td>{{ primary_answer.question }}</td>
+                <td>{{ primary_answer.answer }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <!-- Additional Questions -->
+        <h2>Detailed Questions</h2>
         <table>
             <tr>
                 <th>Index ID</th>
@@ -97,6 +122,8 @@
             </tr>
             {% endfor %}
         </table>
+
+        <!-- Download Button -->
         <div class="button-container">
             <a href="{{ url_for('download_form', form_id=form_id) }}">
                 <button>Download PDF File</button>

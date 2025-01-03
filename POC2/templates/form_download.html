@@ -36,6 +36,8 @@
             color: #4CAF50;
             text-align: center;
             margin-bottom: 20px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
         }
 
         table {
@@ -73,8 +75,31 @@
     </style>
 </head>
 <body>
-    <header>Fire Risk Assessment</header>
+    <header>Fire Risk Assessment: Form {{ form_id }}</header>
     <div class="container">
+
+        <!-- Primary Information Section -->
+        <h2>Primary Information</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Index ID</th>
+                    <th>Detail</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for primary_answer in primary_answers %}
+                <tr>
+                    <td>{{ primary_answer.question_id }}</td>
+                    <td>{{ primary_answer.question }}</td>
+                    <td>{{ primary_answer.answer }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Detailed Questions Section -->
         <h2>Fire Hazards and Their Elimination or Control</h2>
         <table>
             <thead>

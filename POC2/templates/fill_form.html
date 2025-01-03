@@ -11,15 +11,6 @@
             padding: 0;
         }
 
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
         .container {
             max-width: 800px;
             margin: 20px auto;
@@ -33,20 +24,15 @@
             text-align: center;
             color: #4CAF50;
             margin-bottom: 20px;
-            font-weight: 500;
         }
 
         form div {
             margin-bottom: 15px;
         }
 
-        form label {
+        label {
             font-size: 16px;
             font-weight: bold;
-        }
-
-        form input[type="radio"] {
-            margin-right: 10px;
         }
 
         textarea {
@@ -85,18 +71,22 @@
         button:hover {
             background-color: #45a049;
         }
-
-        .control-measures {
-            display: none;
-            margin-top: 10px;
-        }
     </style>
 </head>
 <body>
-    <header>Fill Form {{ form_id }}</header>
     <div class="container">
-        <h1>Form: {{ form_id }}</h1>
-        <form method="POST">
+        <h1>Fill Form {{ form_id }}</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <h2>Primary Questions</h2>
+            {% for question in primary_questions %}
+            <div>
+                <label>{{ question['id'] }}: {{ question['question'] }}</label><br>
+                <textarea name="primary-answer-{{ question['id'] }}" required></textarea>
+            </div>
+            <hr>
+            {% endfor %}
+
+            <h2>Additional Questions</h2>
             {% for question in questions %}
             <div>
                 <label>{{ question['id'] }}: {{ question['question'] }}</label><br>
@@ -104,13 +94,21 @@
                 <input type="radio" name="answer-{{ question['id'] }}" value="No" required> No
                 <input type="radio" name="answer-{{ question['id'] }}" value="N/A" required> N/A
                 <br>
-                <div id="control-measures-{{ question['id'] }}" class="control-measures">
+                <div id="control-measures-{{ question['id'] }}" style="display: none;">
                     <label>Control Measures (if "No"):</label>
                     <textarea name="control-measures-{{ question['id'] }}"></textarea>
                 </div>
             </div>
             <hr>
             {% endfor %}
+
+            <h2>Upload Pictures</h2>
+            <div>
+                <label>Attach Images:</label>
+                <input type="file" name="images" multiple accept="image/*">
+            </div>
+            <hr>
+
             <button type="submit">Submit</button>
         </form>
     </div>
