@@ -8,6 +8,7 @@ from PyPDF2 import PdfMerger
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from utils import reference_images_to_pdf
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///forms.db'
@@ -47,6 +48,7 @@ def fill_blanks_with_coordinates(form_id,fill_values):
     # Save the modified PDF
     pdf_document.save(output_pdf_path)
     pdf_document.close()
+
 
 
 
@@ -173,14 +175,85 @@ class PrimaryAnswer(db.Model):
     question = db.Column(db.Text, nullable=False)
     answer = db.Column(db.Text, nullable=False)  
 
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)  # Store hashed password
 
-# Routes
+
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        # Generate the hashed password
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+        
+        # Add the user to the database
+        new_user = User(username=username, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        
+        return redirect(url_for('login'))
+    
+    return render_template('register.html')
+
+
+
+import secrets
+from flask import session
+
+app.secret_key = secrets.token_hex(32)  # Set a secret key for session management
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        user = User.query.filter_by(username=username).first()
+        if user and check_password_hash(user.password, password):
+            # Save user info in session
+            session['user_id'] = user.id
+            session['username'] = user.username
+            return redirect(url_for('index'))
+        else:
+            return "Invalid username or password", 400
+
+    return render_template('login.html')
+
+
+from functools import wraps
+from flask import session, redirect, url_for
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    session.clear()  # Clear the session
+    return redirect(url_for('login'))
+
+
 @app.route('/')
+@login_required
 def index():
     forms = Form.query.all()
     return render_template('index.html', forms=forms)
 
 @app.route('/form/new', methods=['GET', 'POST'])
+@login_required
 def create_form():
     if request.method == 'POST':
         form_id = request.form['form_id']
@@ -195,6 +268,7 @@ def create_form():
 
 
 @app.route('/form/<form_id>', methods=['GET', 'POST'])
+@login_required
 def fill_form(form_id):
     form = Form.query.filter_by(form_id=form_id).first()
     if not form:
@@ -248,6 +322,7 @@ def fill_form(form_id):
 
 
 @app.route('/form/<form_id>/view')
+@login_required
 def view_form(form_id):
     primary_answers = PrimaryAnswer.query.filter_by(form_id=form_id).all()
     answers = Answer.query.filter_by(form_id=form_id).all()
@@ -262,6 +337,7 @@ def view_form(form_id):
 
 
 @app.route('/form/<form_id>/download', methods=['GET'])
+@login_required
 def download_form(form_id):
     # Fetch PrimaryAnswer and Answer data
     primary_answers = PrimaryAnswer.query.filter_by(form_id=form_id).all()
@@ -338,6 +414,7 @@ def download_form(form_id):
 
 
 @app.route('/form/<form_id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_form(form_id):
     form = Form.query.filter_by(form_id=form_id).first()
     if not form:
@@ -396,5 +473,5 @@ def edit_form(form_id):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
 

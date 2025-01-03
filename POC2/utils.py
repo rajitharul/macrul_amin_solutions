@@ -32,12 +32,19 @@ def reference_images_to_pdf(form_id):
     page = Image.new("RGB", (page_width, page_height), "white")
 
     # Add title "Reference Pictures" at the top of the first page
-    title_font_size = int(0.5 * dpi)  # Font size for the title
+    title_font_size = int(0.4 * dpi)  # Reduced font size for professionalism
     title_margin = int(0.3 * dpi)  # Margin below the title
-    title_canvas = Image.new("RGB", (page_width, title_font_size + title_margin), "white")
+    title_canvas_height = title_font_size + title_margin
+    title_canvas = Image.new("RGB", (page_width, title_canvas_height), "white")
     draw = ImageDraw.Draw(title_canvas)
-    title_font = ImageFont.truetype("arial.ttf", size=title_font_size)  # Use a TrueType font
-    title_text = "Reference Pictures"
+    
+    # Use a professional font
+    try:
+        title_font = ImageFont.truetype("arial.ttf", size=title_font_size)  # Adjust font path if needed
+    except IOError:
+        title_font = ImageFont.load_default()  # Fallback to default font if Arial is not found
+    
+    title_text = "Reference Picture Section"
     text_bbox = draw.textbbox((0, 0), title_text, font=title_font)  # Calculate text bounding box
     text_width = text_bbox[2] - text_bbox[0]
     text_height = text_bbox[3] - text_bbox[1]
@@ -47,10 +54,10 @@ def reference_images_to_pdf(form_id):
     page.paste(title_canvas, (0, 0))
 
     coords = [
-        (0, title_font_size + title_margin),
-        (page_width // 2, title_font_size + title_margin),
-        (0, page_height // 2 + title_font_size + title_margin),
-        (page_width // 2, page_height // 2 + title_font_size + title_margin),
+        (0, title_canvas_height),
+        (page_width // 2, title_canvas_height),
+        (0, page_height // 2 + title_canvas_height),
+        (page_width // 2, page_height // 2 + title_canvas_height),
     ]
     current_image_index = 0
 

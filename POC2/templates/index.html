@@ -52,49 +52,87 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .form-list a {
-            text-decoration: none;
-            color: #007BFF;
-            font-weight: bold;
-        }
-
-        .form-list a:hover {
-            text-decoration: underline;
-        }
-
-        .form-list ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .form-list li {
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            transition: background-color 0.3s;
-        }
-
-        .form-list li:hover {
-            background-color: #f1f1f1;
-        }
-
         .create-form {
             display: block;
+            width: 200px;
             text-align: center;
             margin: 20px auto;
-            padding: 10px 20px;
+            padding: 15px 20px;
             font-size: 18px;
+            font-weight: bold;
             background-color: #4CAF50;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            border-radius: 10px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .create-form:hover {
             background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        table th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .view-button, .edit-button {
+            text-decoration: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            color: white;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .view-button {
+            background-color: #007BFF;
+        }
+
+        .edit-button {
+            background-color: #FFC107;
+        }
+
+        .view-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .edit-button:hover {
+            background-color: #e0a800;
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -109,19 +147,27 @@
 
     <div class="form-list">
         <a href="{{ url_for('create_form') }}" class="create-form">Create New Form</a>
-        <ul>
-            {% for form in forms %}
-            <li>
-                <div>
-                    <strong>Form ID:</strong> {{ form.form_id }}
-                </div>
-                <div class="action-buttons">
-                    <a href="{{ url_for('view_form', form_id=form.form_id) }}" class="view-button">View</a>
-                    <a href="{{ url_for('edit_form', form_id=form.form_id) }}" class="edit-button">Edit</a>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>Form ID</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for form in forms %}
+                <tr>
+                    <td>{{ form.form_id }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{{ url_for('view_form', form_id=form.form_id) }}" class="view-button">View</a>
+                            <a href="{{ url_for('edit_form', form_id=form.form_id) }}" class="edit-button">Edit</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
