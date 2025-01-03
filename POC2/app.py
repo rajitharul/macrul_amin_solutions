@@ -7,6 +7,7 @@ import pdfkit
 from PyPDF2 import PdfMerger
 from datetime import datetime
 from werkzeug.utils import secure_filename
+from utils import reference_images_to_pdf
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///forms.db'
@@ -277,13 +278,16 @@ def download_form(form_id):
 
     # Convert the answers into a numeric array
     numeric_array = [
-        float(specific_values_dict.get("6.08", 0)),  # Default to 0 if missing
-        float(specific_values_dict.get("6.09", 0)),
-        float(specific_values_dict.get("6.10", 0))
+        specific_values_dict.get("6.08", 0),  # Default to 0 if missing
+        specific_values_dict.get("6.09", 0),
+        specific_values_dict.get("6.10", 0)
     ]
 
     # Call your custom function
     fill_blanks_with_coordinates(form_id, numeric_array)
+
+    # Images section generation
+    reference_images_to_pdf(form_id)
 
     # Ensure data exists
     if not primary_answers and not answers:
@@ -313,6 +317,7 @@ def download_form(form_id):
     # Path to the additional PDFs
     cover_page_path = "cover_page.pdf"  # Ensure this file exists in your project directory
     risk_assessment_matrix_path = f"risk_assestment_matrix_output{form_id}.pdf"  # Ensure this file exists in your project directory
+    reference_pictures_path = f"downloads/reference_pictures_{form_id}.pdf"  # Path to the reference pictures PDF
 
     # Merge the PDFs
     merger = PdfMerger()
@@ -321,6 +326,8 @@ def download_form(form_id):
     merger.append(generated_pdf_path)
     if os.path.exists(risk_assessment_matrix_path):
         merger.append(risk_assessment_matrix_path)
+    if os.path.exists(reference_pictures_path):
+        merger.append(reference_pictures_path)
     merger.write(final_pdf_path)
     merger.close()
 
