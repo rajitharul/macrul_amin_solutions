@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fire Risk Assessment {{ form_id }}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 500; /* Reduced thickness */
+            font-style: italic; /* Slightly slanted style */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 500; /* Reduced thickness */
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: 500; /* Reduced thickness */
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <header>Fire Risk Assessment</header>
+    <div class="container">
+        <h2>Fire Hazards and Their Elimination or Control</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Index ID</th>
+                    <th>Detail</th>
+                    <th>Values</th>
+                    <th>Control Measures</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for answer in answers %}
+                <tr>
+                    <td>{{ answer.question_id }}</td>
+                    <td>{{ answer.question }}</td>
+                    <td>{{ answer.answer }}</td>
+                    <td>{{ answer.control_measures or "-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <footer>&copy; {{ form_id }} | Generated on {{ current_date }}</footer>
+</body>
+</html>

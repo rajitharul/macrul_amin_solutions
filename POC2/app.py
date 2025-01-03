@@ -1,0 +1,215 @@
+from flask import Flask, request, render_template, redirect, url_for, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request, render_template, redirect, url_for, send_file
+import os
+import pdfkit
+import pdfkit
+from PyPDF2 import PdfMerger
+from datetime import datetime
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///forms.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+
+PRIMARY_QUESTIONS = [
+    {"id": "0.01", "question": "Responsible person (e.g. employer) or person having control of premises?"},
+    {"id": "0.02", "question": "Address of premises?"},
+    {"id": "0.03", "question": "Person(s) consulted?"},
+    {"id": "0.04", "question": "Assessor?"},
+    {"id": "0.05", "question": "Assessors statement?"},
+    {"id": "0.06", "question": "Report validated by?"},
+    {"id": "0.07", "question": "Date of fire risk assessment?"},
+    {"id": "0.08", "question": "Date of previous fire risk assessment?"},
+    {"id": "0.09", "question": "Suggested date for review?"},
+    {"id": "0.10", "question": "Fire Risk Assessment Review?"},
+    {"id": "0.11", "question": "Report compliance?"},
+    {"id": "1.01", "question": "Number of floors at ground level and above?"},
+    {"id": "1.02", "question": "Number of floors entirely below ground level?"},
+    {"id": "1.03", "question": "Floors on which car parking is provided?"},
+    {"id": "1.04", "question": "Approximate floor area per floor?"},
+    {"id": "1.05", "question": "Approximate floor area gross?"},
+    {"id": "1.06", "question": "Approximate floor area on ground floor?"},
+    {"id": "1.07", "question": "Details of construction and layout?"},
+    {"id": "1.08", "question": "Occupancy?"},
+    {"id": "2.01", "question": "Approximate maximum number of employees at any one time?"},
+    {"id": "2.02", "question": "Approximate maximum number of other occupants at any one time?"},
+    {"id": "2.03", "question": "Approximate total number of people present in the building at any one time?"},
+    {"id": "3.01", "question": "Sleeping occupants?"},
+    {"id": "3.02", "question": "Disabled employees?"},
+    {"id": "3.03", "question": "Other disabled occupants?"},
+    {"id": "3.04", "question": "Occupants in remote areas and lone workers?"},
+    {"id": "3.05", "question": "Young persons?"},
+    {"id": "3.06", "question": "Others?"},
+    {"id": "4.01", "question": "Fires in past 10 years?"},
+    {"id": "4.02", "question": "Cost of past fire losses?"},
+    {"id": "5.01", "question": "Detail if required?"},
+    {"id": "6.01", "question": "The following fire safety legislation applies to these premises?"},
+    {"id": "6.02", "question": "The above legislation is enforced by?"},
+    {"id": "6.03", "question": "Other legislation that makes significant requirements for fire precautions in these premises?"},
+    {"id": "6.04", "question": "The other legislation referred to above is enforced by?"},
+    {"id": "6.05", "question": "Is there an alterations notice in force?"},
+    {"id": "6.06", "question": "Relevant information and deficiencies observed?"},
+    {"id": "6.07", "question": "Other information?"}
+]
+
+
+# Static Questions
+QUESTIONS = [
+    {"id": "7.01", "question": "Are reasonable measures taken to prevent fires of electrical origin?"},
+    {"id": "7.03", "question": "Are fixed installations periodically inspected and tested?"},
+    {"id": "7.04", "question": "Is portable appliance testing carried out?"},
+    {"id": "7.05", "question": "Is there suitable control over the use of personal electrical appliances?"},
+    {"id": "7.06", "question": "Is there suitable limitation of trailing leads and adapters?"},
+    {"id": "8.01", "question": "Are reasonable measures taken to prevent fires as a result of smoking?"},
+    {"id": "8.02", "question": "Is smoking prohibited in the building?"},
+    {"id": "8.03", "question": "Is smoking prohibited in appropriate areas?"},
+    {"id": "8.04", "question": "Are there suitable arrangements for those who wish to smoke?"},
+    {"id": "8.05", "question": "Did the smoking policy appear to be observed at the time of inspection?"},
+    {"id": "9.01", "question": "Does basic security against arson by outsiders appear reasonable?"},
+    {"id": "9.02", "question": "Is there an absence of unnecessary fire load in close proximity to the premises or available for ignition by outsiders?"},
+    {"id": "10.01", "question": "Is there satisfactory control over the use of portable heaters?"},
+    {"id": "10.02", "question": "Are fixed heating and ventilation installations subject to regular maintenance?"},
+    {"id": "11.01", "question": "Are reasonable measures taken to prevent fires as a result of cooking?"},
+    {"id": "11.02", "question": "Are filters cleaned or changed and ductwork cleaned regularly?"},
+    {"id": "12.01", "question": "Does the building have a lightning protection system?"},
+    {"id": "13.01", "question": "Is the overall standard of housekeeping adequate?"},
+    {"id": "13.02", "question": "Do combustible materials appear to be separated from ignition sources?"},
+    {"id": "13.03", "question": "Is unnecessary accumulation or inappropriate storage of combustible materials or waste avoided?"},
+    {"id": "14.01", "question": "Is there satisfactory control over works carried out in the building?"},
+    {"id": "14.02", "question": "Are fire safety conditions imposed on outside contractors?"},
+    {"id": "14.03", "question": "Is a permit to work system used?"},
+    {"id": "14.04", "question": "Are suitable precautions taken by in-house maintenance personnel who carry out works?"},
+    {"id": "15.01", "question": "Are the general fire precautions adequate to address the hazards associated with dangerous substances?"},
+    {"id": "16.01", "question": "Are there other significant fire hazards that warrant consideration?"},
+    {"id": "17.01", "question": "Is the design and maintenance of the means of escape considered adequate?"},
+    {"id": "17.02", "question": "Do staircase and exit capacities appear to be adequate for the number of occupants?"},
+    {"id": "17.03", "question": "Are there reasonable distances of travel where there is escape in a single direction?"},
+    {"id": "17.04", "question": "Are there reasonable distances of travel where there are alternative means of escape?"},
+    {"id": "17.05", "question": "Is there adequate provision of exits?"},
+    {"id": "17.06", "question": "Do fire exits open in the direction of escape, where necessary?"},
+    {"id": "17.07", "question": "Are there satisfactory arrangements for escape where revolving or sliding doors are used as exits?"},
+    {"id": "17.08", "question": "Are the arrangements provided for securing exits satisfactory?"},
+    {"id": "17.09", "question": "Is a suitable standard of protection designed for escape routes?"},
+    {"id": "17.10", "question": "Are there reasonable arrangements for means of escape for disabled people?"},
+    {"id": "17.11", "question": "Are the escape routes available for use and suitably maintained?"},
+    {"id": "17.12", "question": "Are fire-resisting doors maintained in sound condition and self-closing, where necessary?"},
+    {"id": "17.13", "question": "Is the fire-resisting construction protecting escape routes in sound condition?"},
+    {"id": "17.14", "question": "Are all escape routes clear of obstructions?"},
+    {"id": "17.15", "question": "Are all fire exits easily and immediately openable?"},
+    {"id": "18.01", "question": "Is there compartmentation of a reasonable standard?"},
+    {"id": "18.02", "question": "Is there reasonable limitation of linings that may promote fire spread?"},
+    {"id": "18.03", "question": "Are fire dampers provided to protect critical means of escape?"},
+    {"id": "19.01", "question": "Has a reasonable standard of emergency escape lighting system been provided?"},
+    {"id": "20.01", "question": "Is there a reasonable standard of fire safety signs and notices?"},
+    ]
+# Database Models
+class Form(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    form_id = db.Column(db.String(50), unique=True, nullable=False)
+
+class Answer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    form_id = db.Column(db.String(50), db.ForeignKey('form.form_id'), nullable=False)
+    question_id = db.Column(db.String(10), nullable=False)
+    question = db.Column(db.Text, nullable=False)
+    answer = db.Column(db.String(10), nullable=False)  # Yes, No, N/A
+    control_measures = db.Column(db.Text, nullable=True)
+
+
+class PrimaryAnswer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    form_id = db.Column(db.String(50), db.ForeignKey('form.form_id'), nullable=False)
+    question_id = db.Column(db.String(10), nullable=False)
+    question = db.Column(db.Text, nullable=False)
+    answer = db.Column(db.Text, nullable=False)  
+
+
+# Routes
+@app.route('/')
+def index():
+    forms = Form.query.all()
+    return render_template('index.html', forms=forms)
+
+@app.route('/form/new', methods=['GET', 'POST'])
+def create_form():
+    if request.method == 'POST':
+        form_id = request.form['form_id']
+        new_form = Form(form_id=form_id)
+        db.session.add(new_form)
+        db.session.commit()
+        return redirect(url_for('fill_form', form_id=form_id))
+    return render_template('create_form.html')
+
+@app.route('/form/<form_id>', methods=['GET', 'POST'])
+def fill_form(form_id):
+    form = Form.query.filter_by(form_id=form_id).first()
+    if not form:
+        return "Form not found", 404
+
+    if request.method == 'POST':
+        for question in QUESTIONS:
+            answer = request.form.get(f"answer-{question['id']}")
+            control_measures = request.form.get(f"control-measures-{question['id']}")
+            new_answer = Answer(
+                form_id=form_id,
+                question_id=question["id"],
+                question=question["question"],
+                answer=answer,
+                control_measures=control_measures if answer == "No" else None,
+            )
+            db.session.add(new_answer)
+        db.session.commit()
+        return redirect(url_for('view_form', form_id=form_id))
+
+    return render_template('fill_form.html', form_id=form_id, questions=QUESTIONS)
+
+@app.route('/form/<form_id>/view')
+def view_form(form_id):
+    answers = Answer.query.filter_by(form_id=form_id).all()
+    return render_template(
+        'view_form.html', 
+        form_id=form_id, 
+        answers=answers, 
+        current_date=datetime.now().strftime("%Y-%m-%d")
+    )
+
+@app.route('/form/<form_id>/download', methods=['GET'])
+def download_form(form_id):
+    answers = Answer.query.filter_by(form_id=form_id).all()
+    if not answers:
+        return "No data found for this form.", 404
+
+    # Generate HTML content
+    html_content = render_template('form_download.html', form_id=form_id, answers=answers)
+
+    # Define paths for the PDF
+    generated_pdf_filename = f"{form_id}_generated.pdf"
+    merged_pdf_filename = f"{form_id}_merged.pdf"
+    generated_pdf_path = os.path.join("downloads", generated_pdf_filename)
+    merged_pdf_path = os.path.join("downloads", merged_pdf_filename)
+    os.makedirs("downloads", exist_ok=True)
+
+    # Convert HTML to PDF
+    pdfkit.from_string(html_content, generated_pdf_path)
+
+    # Path to the cover page PDF
+    cover_page_path = "cover_page.pdf"  # Ensure this file exists in your project directory
+
+    # Merge the cover page and the generated PDF
+    merger = PdfMerger()
+    merger.append(cover_page_path)
+    merger.append(generated_pdf_path)
+    merger.write(merged_pdf_path)
+    merger.close()
+
+    # Serve the merged PDF file for download
+    return send_file(merged_pdf_path, as_attachment=True)
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
+

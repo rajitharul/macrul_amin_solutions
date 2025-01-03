@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Forms</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .welcome-section {
+            background-color: #ffffff;
+            color: #555;
+            text-align: center;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .welcome-section h2 {
+            font-size: 22px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .welcome-section p {
+            font-size: 16px;
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .form-list {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-list a {
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+        }
+
+        .form-list a:hover {
+            text-decoration: underline;
+        }
+
+        .form-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .form-list li {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s;
+        }
+
+        .form-list li:hover {
+            background-color: #f1f1f1;
+        }
+
+        .create-form {
+            display: block;
+            text-align: center;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .create-form:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>Welcome to Amin Constructions Assessment Form Handler</header>
+
+    <div class="welcome-section">
+        <h2>Your Reliable Partner in Fire Risk Assessment</h2>
+        <p>Effortlessly manage, track, and analyze your fire risk assessments with our intuitive system. 
+        Click below to create a new form or review existing ones.</p>
+    </div>
+
+    <div class="form-list">
+        <a href="{{ url_for('create_form') }}" class="create-form">Create New Form</a>
+        <ul>
+            {% for form in forms %}
+            <li>
+                <a href="{{ url_for('view_form', form_id=form.form_id) }}">Form ID: {{ form.form_id }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
