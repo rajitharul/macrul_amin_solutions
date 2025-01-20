@@ -75,7 +75,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>Fill Form {{ form_id }}</h1>
+        <h2>Fill Form {{ form_id }}</h2>
+        <h1>Form Type: {{ form_type }}</h1>
         <form method="POST" enctype="multipart/form-data">
             <h2>Primary Questions</h2>
             {% for question in primary_questions %}

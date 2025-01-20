@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Create/Edit Form</title>
+</head>
+<body>
+    <h1>Create or Edit Form</h1>
+    <form method="POST">
+        <label for="form_id">Form ID:</label>
+        <input type="number" name="form_id" required><br>
+
+        <!-- Generation Details -->
+        <h2>Generation Details</h2>
+        <label for="floors_above_ground">Floors Above Ground:</label>
+        <input type="text" name="floors_above_ground"><br>
+
+        <label for="floors_below_ground">Floors Below Ground:</label>
+        <input type="text" name="floors_below_ground"><br>
+
+        <label for="car_parking_floors">Car Parking Floors:</label>
+        <input type="text" name="car_parking_floors"><br>
+
+        <label for="floor_area_per_floor">Floor Area Per Floor:</label>
+        <input type="text" name="floor_area_per_floor"><br>
+
+        <label for="total_floor_area">Total Floor Area:</label>
+        <input type="text" name="total_floor_area"><br>
+
+        <label for="ground_floor_area">Ground Floor Area:</label>
+        <input type="text" name="ground_floor_area"><br>
+
+        <label for="construction_details">Construction Details:</label>
+        <textarea name="construction_details"></textarea><br>
+
+        <label for="occupancy">Occupancy:</label>
+        <input type="text" name="occupancy"><br>
+
+        <label for="max_employees">Max Employees:</label>
+        <input type="text" name="max_employees"><br>
+
+        <label for="max_other_occupants">Max Other Occupants:</label>
+        <input type="text" name="max_other_occupants"><br>
+
+        <label for="total_people_present">Total People Present:</label>
+        <input type="text" name="total_people_present"><br>
+
+        <label for="sleeping_occupants">Sleeping Occupants:</label>
+        <input type="text" name="sleeping_occupants"><br>
+
+        <label for="disabled_employees">Disabled Employees:</label>
+        <input type="text" name="disabled_employees"><br>
+
+        <label for="disabled_occupants">Disabled Occupants:</label>
+        <input type="text" name="disabled_occupants"><br>
+
+        <label for="remote_occupants">Remote Occupants:</label>
+        <input type="text" name="remote_occupants"><br>
+
+        <label for="young_persons">Young Persons:</label>
+        <input type="text" name="young_persons"><br>
+
+        <label for="specific_groups">Specific Groups:</label>
+        <textarea name="specific_groups"></textarea><br>
+
+        <label for="past_fires">Past Fires:</label>
+        <input type="text" name="past_fires"><br>
+
+        <label for="fire_loss_cost">Fire Loss Cost:</label>
+        <input type="text" name="fire_loss_cost"><br>
+
+        <label for="additional_details">Additional Details:</label>
+        <textarea name="additional_details"></textarea><br>
+
+        <label for="fire_legislation">Fire Legislation:</label>
+        <textarea name="fire_legislation"></textarea><br>
+
+        <label for="enforced_by">Enforced By:</label>
+        <input type="text" name="enforced_by"><br>
+
+        <label for="other_legislation">Other Legislation:</label>
+        <textarea name="other_legislation"></textarea><br>
+
+        <!-- Checkbox Form -->
+        <h2>Checkbox Details</h2>
+        <label for="electrical_origin">Electrical Origin:</label>
+        <select name="electrical_origin">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="n/a">N/A</option>
+        </select><br>
+
+        <label for="fixed_inspection">Fixed Inspection:</label>
+        <select name="fixed_inspection">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="n/a">N/A</option>
+        </select><br>
+
+        <label for="appliance_testing">Appliance Testing:</label>
+        <select name="appliance_testing">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="n/a">N/A</option>
+        </select><br>
+
+        <label for="personal_appliances">Personal Appliances:</label>
+        <select name="personal_appliances">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="n/a">N/A</option>
+        </select><br>
+
+        <label for="trailing_leads">Trailing Leads:</label>
+        <select name="trailing_leads">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="n/a">N/A</option>
+        </select><br>
+
+        <label for="observations_7_02">Observations (7.02):</label>
+        <textarea name="observations_7_02"></textarea><br>
+
+        <label for="smoking">Smoking:</label>
+        <select name="smoking">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="n/a">N/A</option>
+        </select><br>
+
+        <label for="smoking_prohibited">Smoking Prohibited:</label>
+        <select name="smoking_prohibited">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="n/a">N/A</option>
+        </select><br>
+
+        <label for="smoking_area">Smoking Area:</label>
+        <select name="smoking_area">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="n/a">N/A</option>
+        </select><br>
+
+        <label for="observations_8_02">Observations (8.02):</label>
+        <textarea name="observations_8_02"></textarea><br>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

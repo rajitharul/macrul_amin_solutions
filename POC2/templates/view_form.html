@@ -51,16 +51,16 @@
         }
 
         table th {
-            background-color: #0078D7;
+            background-color: black;
             color: white;
         }
 
         table tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #ffcccc; /* Light red for alternating rows */
         }
 
         table tr:hover {
-            background-color: #f1f1f1;
+            background-color: #ff9999; /* Deeper red for hover effect */
         }
 
         .button-container {
@@ -120,6 +120,27 @@
                 <td>{{ answer.answer }}</td>
                 <td>{{ answer.control_measures or "N/A" }}</td>
             </tr>
+            {% endfor %}
+        </table>
+
+        <!-- Action Plan -->
+        <h2>Action Plan</h2>
+        <table>
+            <tr>
+                <th>Index ID</th>
+                <th>Details</th>
+                <th>Value</th>
+                <th>Control Measures</th>
+            </tr>
+            {% for answer in answers %}
+            {% if answer.answer == "No" %}
+            <tr>
+                <td>{{ answer.question_id }}</td>
+                <td>{{ answer.question }}</td>
+                <td>{{ answer.answer }}</td>
+                <td>{{ answer.control_measures or "N/A" }}</td>
+            </tr>
+            {% endif %}
             {% endfor %}
         </table>
 

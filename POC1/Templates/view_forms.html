@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>View Forms</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+        a {
+            display: inline-block;
+            margin: 20px 0;
+            text-decoration: none;
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>View All Forms</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Form ID</th>
+                <th>Generation Details</th>
+                <th>Checkbox Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for gen in gen_details %}
+            <tr>
+                <td>{{ gen.form_id }}</td>
+                <td>
+                    Floors Above Ground: {{ gen.floors_above_ground }}<br>
+                    Floors Below Ground: {{ gen.floors_below_ground }}<br>
+                    Car Parking Floors: {{ gen.car_parking_floors }}<br>
+                    Floor Area Per Floor: {{ gen.floor_area_per_floor }}<br>
+                    Total Floor Area: {{ gen.total_floor_area }}<br>
+                    Ground Floor Area: {{ gen.ground_floor_area }}<br>
+                    Construction Details: {{ gen.construction_details }}<br>
+                    Occupancy: {{ gen.occupancy }}<br>
+                    Max Employees: {{ gen.max_employees }}<br>
+                    Max Other Occupants: {{ gen.max_other_occupants }}<br>
+                    Total People Present: {{ gen.total_people_present }}<br>
+                    Sleeping Occupants: {{ gen.sleeping_occupants }}<br>
+                    Disabled Employees: {{ gen.disabled_employees }}<br>
+                    Disabled Occupants: {{ gen.disabled_occupants }}<br>
+                    Remote Occupants: {{ gen.remote_occupants }}<br>
+                    Young Persons: {{ gen.young_persons }}<br>
+                    Specific Groups: {{ gen.specific_groups }}<br>
+                    Past Fires: {{ gen.past_fires }}<br>
+                    Fire Loss Cost: {{ gen.fire_loss_cost }}<br>
+                    Additional Details: {{ gen.additional_details }}<br>
+                    Fire Legislation: {{ gen.fire_legislation }}<br>
+                    Enforced By: {{ gen.enforced_by }}<br>
+                    Other Legislation: {{ gen.other_legislation }}
+                </td>
+                <td>
+                    {% for checkbox in checkbox_details %}
+                        {% if checkbox.form_id == gen.form_id %}
+                            Electrical Origin: {{ checkbox.electrical_origin }}<br>
+                            Fixed Inspection: {{ checkbox.fixed_inspection }}<br>
+                            Appliance Testing: {{ checkbox.appliance_testing }}<br>
+                            Personal Appliances: {{ checkbox.personal_appliances }}<br>
+                            Trailing Leads: {{ checkbox.trailing_leads }}<br>
+                            Observations (7.02): {{ checkbox.observations_7_02 }}<br>
+                            Smoking: {{ checkbox.smoking }}<br>
+                            Smoking Prohibited: {{ checkbox.smoking_prohibited }}<br>
+                            Smoking Area: {{ checkbox.smoking_area }}<br>
+                            Observations (8.02): {{ checkbox.observations_8_02 }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="text-align: center;">
+        <a href="/">Create or Edit Form</a>
+    </div>
+</body>
+</html>

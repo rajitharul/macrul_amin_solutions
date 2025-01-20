@@ -53,17 +53,17 @@
         }
 
         table th {
-            background-color: #4CAF50;
-            color: white;
-            font-weight: 500; /* Reduced thickness */
+            background-color: black; /* Black background for headers */
+            color: white;           /* White text for headers */
+            font-weight: 500;       /* Reduced thickness */
         }
 
         table tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f9f9f9; /* Optional: Keep even-row light gray */
         }
 
         table tr:hover {
-            background-color: #f1f1f1;
+            background-color: #f1f1f1; /* Optional: Keep hover light gray */
         }
 
         footer {
@@ -118,6 +118,31 @@
                     <td>{{ answer.answer }}</td>
                     <td>{{ answer.control_measures or "-" }}</td>
                 </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Action Plan Section -->
+        <h2>Action Plan</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Index ID</th>
+                    <th>Detail</th>
+                    <th>Value</th>
+                    <th>Control Measures</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for answer in answers %}
+                {% if answer.answer == "No" %}
+                <tr>
+                    <td>{{ answer.question_id }}</td>
+                    <td>{{ answer.question }}</td>
+                    <td>{{ answer.answer }}</td>
+                    <td>{{ answer.control_measures or "-" }}</td>
+                </tr>
+                {% endif %}
                 {% endfor %}
             </tbody>
         </table>

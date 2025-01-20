@@ -158,6 +158,8 @@ QUESTIONS = [
 class Form(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     form_id = db.Column(db.String(50), unique=True, nullable=False)
+    form_type = db.Column(db.String(20), nullable=False)  # new column to store form type
+
 
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -183,23 +185,23 @@ class User(db.Model):
 
 
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+# @app.route('/register', methods=['GET', 'POST'])
+# def register():
+#     if request.method == 'POST':
+#         username = request.form['username']
+#         password = request.form['password']
         
-        # Generate the hashed password
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+#         # Generate the hashed password
+#         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
         
-        # Add the user to the database
-        new_user = User(username=username, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
+#         # Add the user to the database
+#         new_user = User(username=username, password=hashed_password)
+#         db.session.add(new_user)
+#         db.session.commit()
         
-        return redirect(url_for('login'))
+#         return redirect(url_for('login'))
     
-    return render_template('register.html')
+#     return render_template('register.html')
 
 
 
@@ -252,17 +254,32 @@ def index():
     forms = Form.query.all()
     return render_template('index.html', forms=forms)
 
+
+
 @app.route('/form/new', methods=['GET', 'POST'])
 @login_required
 def create_form():
     if request.method == 'POST':
         form_id = request.form['form_id']
-        new_form = Form(form_id=form_id)
+        form_type = request.form['form_type']  # Get the form type from the form
+
+        # Create a new form with the selected form_type
+        new_form = Form(form_id=form_id, form_type=form_type)
         db.session.add(new_form)
         db.session.commit()
-        return redirect(url_for('fill_form', form_id=form_id))
-    return render_template('create_form.html')
 
+        return redirect(url_for('fill_form', form_id=form_id))
+
+    # Fetch the last form ID from the database to increment it
+    last_form = Form.query.order_by(Form.id.desc()).first()
+    if last_form:
+        # Extract the numeric part of the form_id and increment it
+        # Assuming form_id is numeric; adjust based on your format
+        new_form_id = str(int(last_form.form_id) + 1)
+    else:
+        new_form_id = '1'  # If no forms exist, start with form_id '1'
+
+    return render_template('create_form.html', new_form_id=new_form_id)
 
 
 
@@ -313,6 +330,7 @@ def fill_form(form_id):
     return render_template(
         'fill_form.html',
         form_id=form_id,
+        form_type=form.form_type,
         primary_questions=PRIMARY_QUESTIONS,
         questions=QUESTIONS
     )
