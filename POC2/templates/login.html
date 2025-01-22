@@ -5,7 +5,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background-color: #1a1a1a;
             margin: 0;
             padding: 0;
             display: flex;
@@ -15,24 +15,24 @@
         }
 
         .container {
-            background: white;
+            background: #2b2b2b;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             text-align: center;
             max-width: 400px;
             width: 100%;
         }
 
         h1 {
-            color: #4CAF50;
+            color: #cc0000;
             font-size: 24px;
             margin-bottom: 20px;
         }
 
         .welcome-message {
             font-size: 16px;
-            color: #555;
+            color: #ffffff;
             margin-bottom: 30px;
         }
 
@@ -41,22 +41,36 @@
             font-size: 14px;
             margin-bottom: 8px;
             text-align: left;
+            color: #ffffff;
         }
 
         input[type="text"], input[type="password"] {
             width: calc(100% - 20px);
             padding: 10px;
             margin-bottom: 20px;
-            border: 1px solid #ddd;
+            border: 1px solid #444;
             border-radius: 5px;
             font-size: 14px;
+            background-color: #333;
+            color: #ffffff;
+        }
+
+        input[type="text"]::placeholder, 
+        input[type="password"]::placeholder {
+            color: #888;
+        }
+
+        input[type="text"]:focus, 
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #cc0000;
         }
 
         button {
             width: 100%;
             padding: 10px;
             font-size: 16px;
-            background-color: #4CAF50;
+            background-color: #cc0000;
             color: white;
             border: none;
             border-radius: 5px;
@@ -65,7 +79,7 @@
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #ff0000;
         }
 
         .footer {
@@ -92,3 +106,4 @@
     </div>
 </body>
 </html>
+

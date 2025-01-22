@@ -56,6 +56,53 @@ def fill_blanks_with_coordinates(form_id,fill_values):
 
 
 
+""" QUESTIONS AND PRIMARY QUESTIONS ARE FOR THE NON HOUSING REQUIREMENT 
+
+
+"""
+
+
+PRIMARY_HOUSING_QUESTIONS = [
+    {"id": "0.01", "question": "Responsible person (e.g. employer) or person having control of premises?"},
+    {"id": "0.02", "question": "Address of premises?"},
+    {"id": "0.03", "question": "Person(s) consulted?"},
+    {"id": "0.04", "question": "Assessor?"},
+    {"id": "0.05", "question": "Assessors statement?"},
+    {"id": "0.06", "question": "Report validated by?"},
+    {"id": "0.07", "question": "Date of fire risk assessment?"},
+    {"id": "0.08", "question": "Date of previous fire risk assessment?"},
+    {"id": "0.09", "question": "Suggested date for review?"},
+    {"id": "0.10", "question": "Fire Risk Assessment Review?"},
+    {"id": "0.11", "question": "Report compliance?"},
+    {"id": "1.01", "question": "Number of floors at ground level and above"},
+    {"id": "1.02", "question": "Number of floors entirely below ground level"},
+    {"id": "1.03", "question": "Floors on which car parking is provided"},
+    {"id": "1.04", "question": "Number of flats"},
+    {"id": "1.05", "question": "Approximate gross floor area"},
+    {"id": "1.06", "question": "Brief details of construction and approximate age of building"},
+    {"id": "1.07", "question": "Occupancy"},
+    {"id": "2.01", "question": "Approximate maximum number of employees at any one time"},
+    {"id": "2.02", "question": "Approximate maximum number of residents and visitors at any one time"},
+    {"id": "3.01", "question": "Sleeping occupants"},
+    {"id": "3.02", "question": "Occupants in remote areas and lone workers"},
+    {"id": "3.03", "question": "Others"},
+    {"id": "3.04", "question": "Disabled occupants (if known)"},
+    {"id": "4.01", "question": "Fires in the past"},
+    {"id": "4.02", "question": "Cost of past fire losses"},
+    {"id": "5.01", "question": "Detail here if required"},
+    {"id": "6.01", "question": "The following fire safety legislation applies to these premises"},
+    {"id": "6.02", "question": "The above legislation is enforced by"},
+    {"id": "6.03", "question": "Other legislation that makes significant requirements for fire precautions in these premises"},
+    {"id": "6.04", "question": "The other legislation referred to above is enforced by"},
+    {"id": "6.05", "question": "Is there an alterations notice in force?"},
+    {"id": "6.06", "question": "Relevant information and deficiencies observed"},
+    {"id": "6.07", "question": "Other information if required"},
+    {"id": "6.08", "question": "Risk Likelyhood?"},
+    {"id": "6.09", "question": "Risk Severity?"},
+    {"id": "6.10", "question": "Risk Rating Score?"},
+]
+
+
 
 
 
@@ -154,6 +201,93 @@ QUESTIONS = [
     {"id": "19.01", "question": "Has a reasonable standard of emergency escape lighting system been provided?"},
     {"id": "20.01", "question": "Is there a reasonable standard of fire safety signs and notices?"},
     ]
+
+
+HOUSING_QUESTIONS = [
+    {"id": "7.01", "question": "Are reasonable measures taken to prevent fires of electrical origin?"},
+    {"id": "7.02a", "question": "Are fixed installations periodically inspected and tested?"},
+    {"id": "7.02b", "question": "Is portable appliance testing carried out?"},
+    {"id": "8.01", "question": "Are reasonable measures taken to prevent fires as a result of smoking?"},
+    {"id": "8.02a", "question": "Is smoking prohibited in appropriate areas?"},
+    {"id": "8.02b", "question": "Are there suitable arrangements for those who wish to smoke?"},
+    {"id": "8.02c", "question": "Did the smoking policy appear to be observed at the time of inspection?"},
+    {"id": "8.02d", "question": "Are \"No smoking\" signs provided in the common areas?"},
+    {"id": "9.01", "question": "Does basic security against arson by outsiders appear reasonable?"},
+    {"id": "9.02", "question": "Is there an absence of unnecessary fire load in close proximity to the premises or available for ignition by outsiders?"},
+    {"id": "10.01", "question": "Is there satisfactory control over the use of portable heaters?"},
+    {"id": "10.02", "question": "Are fixed heating and ventilation installations subject to regular maintenance?"},
+    {"id": "11.01", "question": "Are reasonable measures taken to prevent fires as a result of cooking?"},
+    {"id": "12.01", "question": "Does the building have a lightning protection system?"},
+    {"id": "13.01", "question": "Is the overall standard of housekeeping adequate?"},
+    {"id": "13.02a", "question": "Do combustible materials appear to be separated from ignition sources?"},
+    {"id": "13.02b", "question": "Is unnecessary accumulation or inappropriate storage of combustible materials or waste?"},
+    {"id": "13.02c", "question": "Are gas and electricity intake/meter cupboards adequately secured and kept clear of combustible materials?"},
+    {"id": "14.01", "question": "Is there satisfactory control over works carried out in the building?"},
+    {"id": "15.01", "question": "Are the general fire precautions adequate to address the hazards associated with dangerous substances used or stored within the premises?"},
+    {"id": "16.01", "question": "Hazards"},
+    {"id": "17.01", "question": "Is the design and maintenance of the means of escape considered adequate?"},
+    {"id": "17.02a", "question": "Are there reasonable distances of travel:"},
+    {"id": "17.02a1", "question": "Where there is escape in a single direction?"},
+    {"id": "17.02a2", "question": "Where there are alternative means of escape?"},
+    {"id": "17.02b", "question": "Is there adequate provision of exits?"},
+    {"id": "17.02c", "question": "Do fire exits open in the direction of escape, where necessary?"},
+    {"id": "17.02d", "question": "Are the arrangements provided for securing exits satisfactory?"},
+    {"id": "17.02e", "question": "Is the fire-resisting construction protecting escape routes and staircases of a suitable standard and maintained in sound condition?"},
+    {"id": "17.02f", "question": "Is the fire resistance of doors to staircases and the common areas considered adequate, and are the doors maintained in sound condition?"},
+    {"id": "17.02g", "question": "Are suitable self closing devices fitted to fire doors in the common areas?"},
+    {"id": "17.02h", "question": "Is the fire resistance of doors to meter cupboards/store rooms/plant rooms in common areas considered adequate, and are they adequately secured and/or fitted with suitable self-closing devices?"},
+    {"id": "17.02i", "question": "Is the fire resistance of flat entrance doors considered adequate, and are the doors maintained in sound condition?"},
+    {"id": "17.02j", "question": "Are suitable self closing devices fitted to flat entrance fire doors and, where fitted, maintained in good working order?"},
+    {"id": "17.02k", "question": "Are there adequate smoke control provisions to protect the common escape routes, where necessary?"},
+    {"id": "17.02l", "question": "Are all escape routes clear of obstructions?"},
+    {"id": "17.02m", "question": "Are all fire exits easily and immediately openable?"},
+    {"id": "17.02n", "question": "Are there reasonable arrangements for means of escape for disabled people?"},
+    {"id": "18.01a", "question": "Adequate levels of compartmentation between floors and between flats and the common escape routes?"},
+    {"id": "18.01b", "question": "Reasonable limitation of linings that may promote fire spread?"},
+    {"id": "18.01c", "question": "As far as can be reasonably be ascertained, reasonable fire separation within any roof space?"},
+    {"id": "18.01d", "question": "Adequately fire protected service risers and/or ducts in common areas, that will restrict the spread of fire and smoke?"},
+    {"id": "18.02", "question": "As far as can be reasonably be ascertained, are fire dampers provided necessary to protect critical means of escape against passage of fire, smoke and products of combustion in the early stages of a fire?"},
+    {"id": "19.01", "question": "Has a reasonable standard of emergency escape lighting system been provided?"},
+    {"id": "20.01", "question": "Is there a reasonable standard of fire safety signs and notices?"},
+    {"id": "21.01", "question": "Is a reasonable fire detection and fire alarm system provided in common areas, where necessary?"},
+    {"id": "21.02", "question": "If there is a communal fire detection and fire alarm system, does it extend into the dwellings?"},
+    {"id": "21.03", "question": "Where appropriate, has a fire alarm zone plan been provided?"},
+    {"id": "21.04", "question": "Where appropriate, are there adequate arrangements for silencing and resetting an alarm condition?"},
+    {"id": "22.01", "question": "Is there reasonable provision of manual fire extinguishing appliances?"},
+    {"id": "22.02", "question": "Are all fire extinguishing appliances readily accessible?"},
+    {"id": "23.01a", "question": "Sprinkler system?"},
+    {"id": "23.01b", "question": "Misting system?"},
+    {"id": "24.01", "question": "Type of other fixed system(s) installed"},
+    {"id": "24.02", "question": "Are there appropriately sited facilities for electrical isolation of any photovoltaic (PV) cells, with appropriate signage, to assist the fire and rescue service?"},
+    {"id": "25.01", "question": "Safety assistance"},
+    {"id": "25.02", "question": "Fire safety at the premises is managed by"},
+    {"id": "25.03", "question": "Is there a suitable record of the fire safety arrangements?"},
+    {"id": "25.04", "question": "Evacuation strategy"},
+    {"id": "25.05", "question": "Are procedures in the event of a fire appropriate and properly documented, where appropriate?"},
+    {"id": "25.06", "question": "Are routine in-house inspections of fire precautions undertaken?"},
+    {"id": "26.01", "question": "Are all staff given adequate fire safety instruction and training on induction?"},
+    {"id": "26.02", "question": "When the employees of another employer work in the premises, is appropriate information on the fire risks and fire safety measures provided?"},
+    {"id": "27.01", "question": "Is there adequate maintenance of the premises?"},
+    {"id": "27.02", "question": "Is weekly testing and periodic servicing of fire detection and alarm system undertaken?"},
+    {"id": "27.03", "question": "Is monthly and annual testing routines for emergency lighting?"},
+    {"id": "27.04", "question": "Is annual maintenance of fire extinguishing appliances undertaken?"},
+    {"id": "27.05", "question": "Are six-monthly inspection and annual testing of rising mains undertaken?"},
+    {"id": "27.06", "question": "Are weekly and monthly testing, six monthly inspection and annual testing of fire-fighting lift(s) provided?"},
+    {"id": "27.07", "question": "Other relevant inspections or tests"},
+    {"id": "28.01a", "question": "Fire alarm tests (where relevant)?"},
+    {"id": "28.01b", "question": "Emergency escape lighting tests?"},
+    {"id": "28.01c", "question": "Maintenance and testing of other fire protection equipment?"},
+    {"id": "29.09", "question": "Is the fire emergency plan available to the enforcing authority?"},
+    {"id": "29.10", "question": "Are Personal Emergency Evacuation Plans (PEEPS) required and in place?"},
+    {"id": "29.01", "question": "Is there a suitably located premises information box for the fire and rescue service?"},
+    {"id": "29.02", "question": "Are there arrangements to keep the premises information box up to date?"},
+    {"id": "30.01", "question": "Has information on fire procedures been disseminated to residents?"},
+    {"id": "30.02", "question": "Is fire safety information disseminated to residents?"}
+]
+
+
+
+
 # Database Models
 class Form(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -291,9 +425,17 @@ def fill_form(form_id):
     if not form:
         return "Form not found", 404
 
+    # Select question sets based on form type
+    if form.form_type == 'housing':
+        primary_questions = PRIMARY_HOUSING_QUESTIONS
+        questions = HOUSING_QUESTIONS
+    else:
+        primary_questions = PRIMARY_QUESTIONS
+        questions = QUESTIONS
+
     if request.method == 'POST':
-        # Save responses to PRIMARY_QUESTIONS
-        for question in PRIMARY_QUESTIONS:
+        # Save responses to primary questions
+        for question in primary_questions:
             answer = request.form.get(f"primary-answer-{question['id']}")
             new_primary_answer = PrimaryAnswer(
                 form_id=form_id,
@@ -303,8 +445,8 @@ def fill_form(form_id):
             )
             db.session.add(new_primary_answer)
 
-        # Save responses to QUESTIONS
-        for question in QUESTIONS:
+        # Save responses to main questions
+        for question in questions:
             answer = request.form.get(f"answer-{question['id']}")
             control_measures = request.form.get(f"control-measures-{question['id']}")
             new_answer = Answer(
@@ -331,12 +473,9 @@ def fill_form(form_id):
         'fill_form.html',
         form_id=form_id,
         form_type=form.form_type,
-        primary_questions=PRIMARY_QUESTIONS,
-        questions=QUESTIONS
+        primary_questions=primary_questions,
+        questions=questions
     )
-
-
-
 
 
 @app.route('/form/<form_id>/view')
