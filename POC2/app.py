@@ -7,8 +7,12 @@ import pdfkit
 from PyPDF2 import PdfMerger
 from datetime import datetime
 from werkzeug.utils import secure_filename
-from utils import reference_images_to_pdf
+from utils import generate_cover_pdf, reference_images_to_pdf
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import send_from_directory
+import os
+
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///forms.db'
@@ -461,10 +465,26 @@ def fill_form(form_id):
         # Handle file uploads
         upload_folder = os.path.join("uploads", form_id)
         os.makedirs(upload_folder, exist_ok=True)
+
+        # Regular images
         for file in request.files.getlist('images'):
             if file:
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(upload_folder, filename))
+
+
+
+        # Building cover image
+        building_cover_image = request.files.get('building_cover_image')
+        if building_cover_image and building_cover_image.filename:
+            # Create a cover_image subfolder
+            cover_image_folder = os.path.join(upload_folder, "cover_image")
+            os.makedirs(cover_image_folder, exist_ok=True)
+            
+            filename = f"building_cover_image_{form_id}{os.path.splitext(secure_filename(building_cover_image.filename))[1]}"
+            building_cover_image.save(os.path.join(cover_image_folder, filename))
+
+
 
         db.session.commit()
         return redirect(url_for('view_form', form_id=form_id))
@@ -477,21 +497,53 @@ def fill_form(form_id):
         questions=questions
     )
 
+@app.route('/uploads/<path:filename>')
+def download_file(filename):
+    # Define the base path for your uploads directory
+    uploads_dir = 'uploads'  # Change this to the absolute path if necessary
+    return send_from_directory(uploads_dir, filename)
+
 
 @app.route('/form/<form_id>/view')
 @login_required
 def view_form(form_id):
     primary_answers = PrimaryAnswer.query.filter_by(form_id=form_id).all()
     answers = Answer.query.filter_by(form_id=form_id).all()
+
+    # Base path for the images folder
+    image_folder = os.path.join('uploads', form_id)
+    cover_image_folder = os.path.join('uploads', form_id, 'cover_image')
+
+    # Ensure forward slashes in file paths
+    image_folder = image_folder.replace(os.sep, '/')
+    cover_image_folder = cover_image_folder.replace(os.sep, '/')
+
+    # Get all image file paths for uploaded images
+    uploaded_images = [
+        os.path.join(form_id, file).replace(os.sep, '/')  # Use forward slashes
+        for file in os.listdir(image_folder)
+        if file.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif'))
+    ]
+
+    # Get the cover image
+    cover_image = None
+    if os.path.exists(cover_image_folder):
+        cover_image_files = [
+            file for file in os.listdir(cover_image_folder)
+            if file.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif'))
+        ]
+        if cover_image_files:
+            cover_image = os.path.join(form_id, 'cover_image', cover_image_files[0]).replace(os.sep, '/')
+
     return render_template(
         'view_form.html', 
         form_id=form_id, 
         primary_answers=primary_answers, 
         answers=answers, 
-        current_date=datetime.now().strftime("%Y-%m-%d")
+        current_date=datetime.now().strftime("%Y-%m-%d"),
+        uploaded_images=uploaded_images,  # Pass the list of image paths
+        cover_image=cover_image         # Pass the cover image path
     )
-
-
 
 @app.route('/form/<form_id>/download', methods=['GET'])
 @login_required
@@ -521,6 +573,9 @@ def download_form(form_id):
 
     # Images section generation
     reference_images_to_pdf(form_id)
+
+    cover_pdf_path = generate_cover_pdf(form_id, "Sample Building Name")
+
 
     # Ensure data exists
     if not primary_answers and not answers:
@@ -554,15 +609,31 @@ def download_form(form_id):
 
     # Merge the PDFs
     merger = PdfMerger()
+    
+    # Check and append the cover page first
     if os.path.exists(cover_page_path):
         merger.append(cover_page_path)
-    merger.append(generated_pdf_path)
+    
+    # Append the cover_pdf_path after the cover page
+    if os.path.exists(cover_pdf_path):
+        merger.append(cover_pdf_path)
+    
+    # Append the generated PDF
+    if os.path.exists(generated_pdf_path):
+        merger.append(generated_pdf_path)
+    
+    # Append the risk assessment matrix if it exists
     if os.path.exists(risk_assessment_matrix_path):
         merger.append(risk_assessment_matrix_path)
+    
+    # Append reference pictures if they exist
     if os.path.exists(reference_pictures_path):
         merger.append(reference_pictures_path)
+    
+    # Write the final merged PDF
     merger.write(final_pdf_path)
     merger.close()
+
 
     # Serve the final merged PDF file
     return send_file(final_pdf_path, as_attachment=True)

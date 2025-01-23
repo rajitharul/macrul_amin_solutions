@@ -82,6 +82,29 @@
         .button-container a button:hover {
             background-color: #005bb5;
         }
+
+        .images-section {
+            margin-top: 30px;
+        }
+
+        .images-section h3 {
+            color: #0078D7;
+            margin-bottom: 15px;
+        }
+
+        .image-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .image-gallery img {
+            max-width: 200px;
+            max-height: 200px;
+            object-fit: cover;
+            border: 3px solid #0078D7;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -143,6 +166,33 @@
             {% endif %}
             {% endfor %}
         </table>
+
+        <!-- Images Section -->
+        <div class="images-section">
+            <h3>Uploaded Images</h3>
+            <!-- Cover Image -->
+            <!-- Gallery of Uploaded Images -->
+            <div class="image-gallery">
+                {% if cover_image %}
+                <div>
+                    
+                    <img src="{{ url_for('download_file', filename=cover_image) }}" alt="Cover Image">
+                </div>
+                {% endif %}
+
+                {% for image in uploaded_images %}
+                <!-- Displaying reference image label with iterating number -->
+                
+                <img src="{{ url_for('download_file', filename=image) }}" alt="Uploaded Image" class="image-thumbnail">
+                 {% endfor %}
+
+
+        
+            </div>
+
+
+
+        </div>
 
         <!-- Download Button -->
         <div class="button-container">
