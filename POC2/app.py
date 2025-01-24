@@ -644,56 +644,132 @@ def download_form(form_id):
 @app.route('/form/<form_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_form(form_id):
+    # Validate form existence
     form = Form.query.filter_by(form_id=form_id).first()
     if not form:
         return "Form not found", 404
 
+    # Determine question sets based on form type
+    if form.form_type == 'housing':
+        primary_questions = PRIMARY_HOUSING_QUESTIONS
+        additional_questions = HOUSING_QUESTIONS
+    else:
+        primary_questions = PRIMARY_QUESTIONS
+        additional_questions = QUESTIONS
+
     # Fetch existing answers
     primary_answers = {pa.question_id: pa for pa in PrimaryAnswer.query.filter_by(form_id=form_id).all()}
-    answers = {a.question_id: a for a in Answer.query.filter_by(form_id=form_id).all()}
+    existing_answers = {a.question_id: a for a in Answer.query.filter_by(form_id=form_id).all()}
 
+    # Image folder paths
+    upload_folder = os.path.join("uploads", form_id)
+    cover_image_folder = os.path.join(upload_folder, "cover_image")
+
+    # Prepare image collections
+    existing_images = []
+    existing_cover_image = None
+
+    # Collect existing regular images
+    if os.path.exists(upload_folder):
+        existing_images = [
+            file for file in os.listdir(upload_folder)
+            if file.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif')) 
+            and file != 'cover_image'
+        ]
+
+    # Collect existing cover image
+    if os.path.exists(cover_image_folder):
+        cover_image_files = [
+            file for file in os.listdir(cover_image_folder)
+            if file.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif'))
+        ]
+        if cover_image_files:
+            existing_cover_image = cover_image_files[0]
+
+    # Handle form submission
     if request.method == 'POST':
-        # Update PrimaryAnswers
-        for question in PRIMARY_QUESTIONS:
+        # Create upload directories if they don't exist
+        os.makedirs(upload_folder, exist_ok=True)
+        os.makedirs(cover_image_folder, exist_ok=True)
+
+        # Process primary question answers
+        for question in primary_questions:
             answer = request.form.get(f"primary-answer-{question['id']}")
+            
             if question['id'] in primary_answers:
-                primary_answers[question['id']].answer = answer
+                # Update existing primary answer
+                primary_answers[question['id']].answer = answer or ''
             else:
+                # Create new primary answer if not exists
                 new_primary_answer = PrimaryAnswer(
                     form_id=form_id,
                     question_id=question['id'],
                     question=question['question'],
-                    answer=answer
+                    answer=answer or ''
                 )
                 db.session.add(new_primary_answer)
 
-        # Update Answers
-        for question in QUESTIONS:
+        # Process additional questions answers
+        for question in additional_questions:
             answer = request.form.get(f"answer-{question['id']}")
             control_measures = request.form.get(f"control-measures-{question['id']}")
-            if question['id'] in answers:
-                answers[question['id']].answer = answer
-                answers[question['id']].control_measures = control_measures if answer == "No" else None
+
+            if question['id'] in existing_answers:
+                # Update existing answer
+                existing_answers[question['id']].answer = answer or ''
+                existing_answers[question['id']].control_measures = control_measures if answer == "No" else None
             else:
+                # Create new answer if not exists
                 new_answer = Answer(
                     form_id=form_id,
                     question_id=question['id'],
                     question=question['question'],
-                    answer=answer,
-                    control_measures=control_measures if answer == "No" else None,
+                    answer=answer or '',
+                    control_measures=control_measures if answer == "No" else None
                 )
                 db.session.add(new_answer)
 
+        # Handle image deletions
+        deleted_images = request.form.getlist('delete_images')
+        for image in deleted_images:
+            image_path = os.path.join(upload_folder, image)
+            if os.path.exists(image_path):
+                os.remove(image_path)
+
+        # Handle cover image deletion
+        if request.form.get('delete_cover_image') and existing_cover_image:
+            cover_image_path = os.path.join(cover_image_folder, existing_cover_image)
+            if os.path.exists(cover_image_path):
+                os.remove(cover_image_path)
+
+        # Process new image uploads
+        for file in request.files.getlist('images'):
+            if file and file.filename:
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(upload_folder, filename))
+
+        # Process new cover image upload
+        building_cover_image = request.files.get('building_cover_image')
+        if building_cover_image and building_cover_image.filename:
+            filename = f"building_cover_image_{form_id}{os.path.splitext(secure_filename(building_cover_image.filename))[1]}"
+            building_cover_image.save(os.path.join(cover_image_folder, filename))
+
+        # Commit all changes
         db.session.commit()
+
+        # Redirect to view form after successful update
         return redirect(url_for('view_form', form_id=form_id))
 
+    # Render edit form template
     return render_template(
         'edit_form.html',
         form_id=form_id,
-        primary_questions=PRIMARY_QUESTIONS,
+        primary_questions=primary_questions,
         primary_answers=primary_answers,
-        questions=QUESTIONS,
-        answers=answers
+        questions=additional_questions,
+        answers=existing_answers,
+        existing_images=existing_images,
+        existing_cover_image=existing_cover_image
     )
 
 

@@ -121,11 +121,11 @@ def generate_cover_pdf(form_id, property_name):
     c.setFillColorRGB(1, 1, 1)  # White background
     c.rect(0, 0, width, height, fill=1, stroke=0)
     
-    # Company Header (dark red color)
-    c.setFillColorRGB(0.5, 0, 0)  # Dark red color
+    # Company Header (bright red color)
+    c.setFillColorRGB(1, 0.192, 0.192)  # Bright red color (#FF3131 in RGB)
     c.setFont("Helvetica-Bold", 24)  # Larger font size
     c.drawCentredString(width/2, height - 2*inch, "Amin Constructions")
-    
+        
     # Subtitle (dark red color)
     c.setFont("Helvetica-Bold", 18)  # Bold font with larger size
     c.drawCentredString(width/2, height - 2.5*inch, "Fire Risk Assessment Report")

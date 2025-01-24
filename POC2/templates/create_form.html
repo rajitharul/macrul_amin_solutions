@@ -1,52 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Form</title>
     <style>
+        /* Simplified Color Palette */
+        :root {
+            --dark-text: #333333;   /* Dark text color */
+            --accent-color: #006A67; /* Teal accent color */
+            --light-background: #f5f5f5; /* Very light background */
+            --light-hover: #e1e1e1; /* Light hover effect */
+        }
+
         body {
             font-family: Arial, sans-serif;
-            background-color: #1a1a1a;
+            line-height: 1.6;
             margin: 0;
             padding: 0;
+            background-color: var(--light-background);
+            color: var(--dark-text);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
         }
 
+        header {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+
+        header .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        header .nav-buttons a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 15px;
+            background-color: #004e4b; /* Darker teal */
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        header .nav-buttons a:hover {
+            background-color: #003d3a; /* Even darker teal */
+        }
+
         .container {
-            background-color: #2b2b2b;
+            background-color: white;
             padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px;
+            margin-top: 80px;
         }
 
         h1 {
             text-align: center;
-            color: #ffffff;
+            color: var(--accent-color);
         }
 
         label {
             font-size: 16px;
             margin-bottom: 5px;
-            color: #ffffff;
+            color: var(--dark-text);
         }
 
         input[type="text"], select {
             width: 100%;
             padding: 10px;
             margin: 10px 0 20px 0;
-            border: 1px solid #444;
+            border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 14px;
-            background-color: #333;
-            color: #ffffff;
+            background-color: var(--light-background);
+            color: var(--dark-text);
         }
 
         button {
-            background-color: #cc0000;
+            background-color: var(--accent-color);
             color: white;
             padding: 10px 20px;
             border: none;
@@ -57,28 +104,23 @@
         }
 
         button:hover {
-            background-color: #ff0000;
+            background-color: #004e4b; /* Darker teal on hover */
         }
 
         .form-group {
             margin-bottom: 20px;
         }
-
-        .form-group input[type="text"] {
-            margin-top: 10px;
-        }
-
-        .form-group select {
-            margin-top: 10px;
-        }
-
-        select option {
-            background-color: #333;
-            color: #ffffff;
-        }
     </style>
 </head>
 <body>
+    <header>
+        <div>Create New Form</div>
+        <div class="nav-buttons">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </header>
+
     <div class="container">
         <h1>Create New Form</h1>
         <form method="POST">

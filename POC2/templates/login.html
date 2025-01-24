@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
+        /* Simplified Color Palette */
+        :root {
+            --dark-text: #333333;   /* Dark text color */
+            --accent-color: #006A67; /* Teal accent color */
+            --light-background: #f5f5f5; /* Very light background */
+            --light-hover: #e1e1e1; /* Light hover effect */
+            --light-yellow: #FFF4B7; /* Light Yellow for text */
+        }
+
         body {
             font-family: Arial, sans-serif;
-            background-color: #1a1a1a;
+            background-color: var(--light-background);  /* Light background */
+            color: var(--dark-text);  /* Dark text for readability */
             margin: 0;
             padding: 0;
             display: flex;
@@ -15,24 +27,24 @@
         }
 
         .container {
-            background: #2b2b2b;
+            background: var(--accent-color);
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
             max-width: 400px;
             width: 100%;
         }
 
         h1 {
-            color: #cc0000;
+            color: var(--light-yellow);  /* Light Yellow for headings */
             font-size: 24px;
             margin-bottom: 20px;
         }
 
         .welcome-message {
             font-size: 16px;
-            color: #ffffff;
+            color: var(--light-yellow);  /* Light Yellow for welcome text */
             margin-bottom: 30px;
         }
 
@@ -41,18 +53,18 @@
             font-size: 14px;
             margin-bottom: 8px;
             text-align: left;
-            color: #ffffff;
+            color: var(--light-yellow);  /* Light Yellow for labels */
         }
 
         input[type="text"], input[type="password"] {
             width: calc(100% - 20px);
             padding: 10px;
             margin-bottom: 20px;
-            border: 1px solid #444;
+            border: 1px solid var(--accent-color); /* Teal border */
             border-radius: 5px;
             font-size: 14px;
-            background-color: #333;
-            color: #ffffff;
+            background-color: #ffffff;  /* White background for input */
+            color: var(--dark-text);  /* Dark text for input */
         }
 
         input[type="text"]::placeholder, 
@@ -63,15 +75,15 @@
         input[type="text"]:focus, 
         input[type="password"]:focus {
             outline: none;
-            border-color: #cc0000;
+            border-color: var(--light-yellow); /* Light Yellow for focus effect */
         }
 
         button {
             width: 100%;
             padding: 10px;
             font-size: 16px;
-            background-color: #cc0000;
-            color: white;
+            background-color: var(--accent-color);  /* Teal button */
+            color: var(--light-yellow);  /* Light Yellow text */
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -79,7 +91,7 @@
         }
 
         button:hover {
-            background-color: #ff0000;
+            background-color: #004e4b; /* Darker teal on hover */
         }
 
         .footer {
@@ -106,4 +118,3 @@
     </div>
 </body>
 </html>
-

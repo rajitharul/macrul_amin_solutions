@@ -1,79 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Edit Form {{ form_id }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Fire Risk Assessment Form ID {{ form_id }}</title>
     <style>
+        /* Reuse existing styles from view_form.html */
+        :root {
+            --dark-text: #333333;
+            --accent-color: #006A67;
+            --light-background: #f5f5f5;
+            --light-hover: #e1e1e1;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            line-height: 1.6;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            background-color: var(--light-background);
+            color: var(--dark-text);
         }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            background: white;
+
+        header {
+            background-color: var(--accent-color);
+            color: white;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        h1 {
             text-align: center;
-            color: #4CAF50;
+            font-size: 24px;
+            font-weight: bold;
         }
-        textarea, input[type="radio"], button {
-            width: 100%;
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 5px;
             margin-bottom: 20px;
-            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th, table td {
+            text-align: left;
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+        }
+
+        .form-control {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-control select {
+            margin-left: 10px;
+            padding: 5px;
+        }
+
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .image-preview img {
+            max-width: 150px;
+            max-height: 150px;
+            object-fit: cover;
+        }
+
+        .delete-image {
+            color: red;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
+    <header>Edit Fire Risk Assessment: Form {{ form_id }}</header>
     <div class="container">
-        <h1>Edit Form {{ form_id }}</h1>
-        <form method="POST">
-            <!-- Primary Questions -->
-            <h2>Primary Questions</h2>
-            {% for question in primary_questions %}
+        <form method="POST" enctype="multipart/form-data">
+            <!-- Primary Information Section -->
+            <h2>Primary Information</h2>
+            <table>
+                <tr>
+                    <th>Index ID</th>
+                    <th>Details</th>
+                    <th>Value</th>
+                </tr>
+                {% for question in primary_questions %}
+                <tr>
+                    <td>{{ question.id }}</td>
+                    <td>{{ question.question }}</td>
+                    <td>
+                        <input type="text" name="primary-answer-{{ question.id }}" 
+                               value="{{ primary_answers.get(question.id, {}).answer if primary_answers.get(question.id) else '' }}">
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <!-- Detailed Questions Section -->
+            <h2>Detailed Questions</h2>
+            <table>
+                <tr>
+                    <th>Index ID</th>
+                    <th>Details</th>
+                    <th>Value</th>
+                    <th>Control Measures</th>
+                </tr>
+                {% for question in questions %}
+                <tr>
+                    <td>{{ question.id }}</td>
+                    <td>{{ question.question }}</td>
+                    <td class="form-control">
+                        <select name="answer-{{ question.id }}">
+                            <option value="" {% if not answers.get(question.id) or answers.get(question.id).answer == '' %}selected{% endif %}>Select</option>
+                            <option value="Yes" {% if answers.get(question.id) and answers.get(question.id).answer == 'Yes' %}selected{% endif %}>Yes</option>
+                            <option value="No" {% if answers.get(question.id) and answers.get(question.id).answer == 'No' %}selected{% endif %}>No</option>
+                            <option value="N/A" {% if answers.get(question.id) and answers.get(question.id).answer == 'N/A' %}selected{% endif %}>N/A</option>
+                        </select>
+                    </td>
+                    <td>
+                        <textarea name="control-measures-{{ question.id }}" placeholder="Control Measures (if No)">{{ answers.get(question.id).control_measures if answers.get(question.id) else '' }}</textarea>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <!-- Image Upload Section -->
+            <h2>Images</h2>
             <div>
-                <label>{{ question['id'] }}: {{ question['question'] }}</label>
-                <textarea name="primary-answer-{{ question['id'] }}">{{ primary_answers[question['id']].answer if question['id'] in primary_answers else "" }}</textarea>
-            </div>
-            {% endfor %}
-
-            <!-- Additional Questions -->
-            <h2>Additional Questions</h2>
-            {% for question in questions %}
-            <div>
-                <label>{{ question['id'] }}: {{ question['question'] }}</label><br>
-
-                <input type="radio" name="answer-{{ question['id'] }}" value="Yes" 
-                {% if question['id'] in answers and answers[question['id']].answer == "Yes" %}checked{% endif %} 
-                onclick="toggleControlMeasure('{{ question['id'] }}', false)"> Yes
-                <input type="radio" name="answer-{{ question['id'] }}" value="No" 
-                {% if question['id'] in answers and answers[question['id']].answer == "No" %}checked{% endif %} 
-                onclick="toggleControlMeasure('{{ question['id'] }}', true)"> No
-                <input type="radio" name="answer-{{ question['id'] }}" value="N/A" 
-                {% if question['id'] in answers and answers[question['id']].answer == "N/A" %}checked{% endif %} 
-                onclick="toggleControlMeasure('{{ question['id'] }}', false)"> N/A
-
-
-
-                <div id="control-measures-{{ question['id'] }}" style="margin-top: 10px; display: {% if question['id'] in answers and answers[question['id']].answer == 'No' %}block{% else %}none{% endif %};">
-                    <label>Control Measures (if "No"):</label>
-                    <textarea name="control-measures-{{ question['id'] }}">{{ answers[question['id']].control_measures if question['id'] in answers and answers[question['id']].answer == "No" else "" }}</textarea>
+                <h3>Cover Image</h3>
+                {% if existing_cover_image %}
+                <div class="image-preview">
+                    <img src="{{ url_for('download_file', filename=form_id + '/cover_image/' + existing_cover_image) }}">
+                    <label>
+                        <input type="checkbox" name="delete_cover_image"> Delete Cover Image
+                    </label>
                 </div>
+                {% endif %}
+                <input type="file" name="building_cover_image" accept="image/*">
             </div>
-            {% endfor %}
-            <button type="submit">Save Changes</button>
+
+            <div>
+                <h3>Additional Images</h3>
+                <div class="image-preview">
+                    {% for image in existing_images %}
+                    <div>
+                        <img src="{{ url_for('download_file', filename=form_id + '/' + image) }}">
+                        <label>
+                            <input type="checkbox" name="delete_images" value="{{ image }}"> Delete
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <input type="file" name="images" multiple accept="image/*">
+            </div>
+
+            <!-- Submit Button -->
+            <div style="text-align: center; margin-top: 20px;">
+                <button type="submit" class="submit-btn">Save Changes</button>
+            </div>
         </form>
     </div>
-
-    <script>
-        function toggleControlMeasure(questionId, show) {
-            const controlDiv = document.getElementById(`control-measures-${questionId}`);
-            controlDiv.style.display = show ? "block" : "none";
-        }
-    </script>
 </body>
 </html>

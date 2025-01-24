@@ -6,19 +6,19 @@
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f9;
-            color: #333;
+            color: black; /* General text in black */
             margin: 0;
             padding: 0;
         }
 
         header {
-            background-color: #4CAF50;
+            background-color: rgb(1, 0.192, 0.192); /* Dark red header */
             color: white;
             padding: 15px;
             text-align: center;
             font-size: 22px;
-            font-weight: 500; /* Reduced thickness */
-            font-style: italic; /* Slightly slanted style */
+            font-weight: 500;
+            font-style: italic;
         }
 
         .container {
@@ -32,38 +32,39 @@
 
         h2 {
             font-size: 20px;
-            font-weight: 500; /* Reduced thickness */
-            color: #4CAF50;
+            font-weight: bold; /* Bold for section headings */
+            color: rgb(1, 0.192, 0.192); /* Dark red for headings */
             text-align: center;
             margin-bottom: 20px;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 10px;
+            text-decoration: underline; /* Underline headings */
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
+            background-color: white; /* Keep white background for tables */
         }
 
         table th, table td {
             border: 1px solid #ddd;
             padding: 10px;
             text-align: left;
+            color: black; /* Black text in tables */
         }
 
         table th {
             background-color: black; /* Black background for headers */
-            color: white;           /* White text for headers */
-            font-weight: 500;       /* Reduced thickness */
+            color: white; /* White text for headers */
+            font-weight: bold;
         }
 
         table tr:nth-child(even) {
-            background-color: #f9f9f9; /* Optional: Keep even-row light gray */
+            background-color: #f9f9f9; /* Light gray for even rows */
         }
 
         table tr:hover {
-            background-color: #f1f1f1; /* Optional: Keep hover light gray */
+            background-color: #f1f1f1; /* Light gray hover effect */
         }
 
         footer {

@@ -1,24 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fire Risk Assessment Form ID {{ form_id }}</title>
     <style>
+        /* Simplified Color Palette */
+        :root {
+            --dark-text: #333333;   /* Dark text color */
+            --accent-color: #006A67; /* Teal accent color */
+            --light-background: #f5f5f5; /* Very light background */
+            --light-hover: #e1e1e1; /* Light hover effect */
+            --light-yellow: #FFF4B7; /* Light Yellow for text */
+        }
+
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
+            background-color: var(--light-background);
+            color: var(--dark-text);
         }
 
         header {
-            background-color: #0078D7;
+            background-color: var(--accent-color);
             color: white;
             padding: 20px;
             text-align: center;
             font-size: 24px;
             font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        header .nav-buttons a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 15px;
+            background-color: #004e4b; /* Darker teal */
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        header .nav-buttons a:hover {
+            background-color: #003d3a; /* Even darker teal */
         }
 
         .container {
@@ -26,13 +59,13 @@
             margin: 20px auto;
             padding: 20px;
             background: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
 
         h2 {
-            color: #0078D7;
-            border-bottom: 2px solid #0078D7;
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
             padding-bottom: 5px;
             margin-bottom: 20px;
         }
@@ -51,16 +84,16 @@
         }
 
         table th {
-            background-color: black;
+            background-color: var(--accent-color);
             color: white;
         }
 
         table tr:nth-child(even) {
-            background-color: #ffcccc; /* Light red for alternating rows */
+            background-color: #f9f9f9; /* Light background for alternating rows */
         }
 
         table tr:hover {
-            background-color: #ff9999; /* Deeper red for hover effect */
+            background-color: var(--light-hover); /* Light hover effect */
         }
 
         .button-container {
@@ -69,7 +102,7 @@
         }
 
         .button-container a button {
-            background-color: #0078D7;
+            background-color: var(--accent-color);
             color: white;
             padding: 10px 20px;
             font-size: 16px;
@@ -80,7 +113,7 @@
         }
 
         .button-container a button:hover {
-            background-color: #005bb5;
+            background-color: #004e4b; /* Darker teal on hover */
         }
 
         .images-section {
@@ -88,7 +121,7 @@
         }
 
         .images-section h3 {
-            color: #0078D7;
+            color: var(--accent-color);
             margin-bottom: 15px;
         }
 
@@ -102,13 +135,19 @@
             max-width: 200px;
             max-height: 200px;
             object-fit: cover;
-            border: 3px solid #0078D7;
+            border: 3px solid var(--accent-color);
             border-radius: 8px;
         }
     </style>
 </head>
 <body>
-    <header>Fire Risk Assessment: Form {{ form_id }}</header>
+    <header>
+        <div>Fire Risk Assessment: Form {{ form_id }}</div>
+        <div class="nav-buttons">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </header>
     <div class="container">
         <!-- Primary Question Answers -->
         <h2>Primary Information</h2>
@@ -171,27 +210,19 @@
         <div class="images-section">
             <h3>Uploaded Images</h3>
             <!-- Cover Image -->
-            <!-- Gallery of Uploaded Images -->
             <div class="image-gallery">
                 {% if cover_image %}
                 <div>
-                    
                     <img src="{{ url_for('download_file', filename=cover_image) }}" alt="Cover Image">
                 </div>
                 {% endif %}
 
                 {% for image in uploaded_images %}
-                <!-- Displaying reference image label with iterating number -->
-                
-                <img src="{{ url_for('download_file', filename=image) }}" alt="Uploaded Image" class="image-thumbnail">
-                 {% endfor %}
-
-
-        
+                <div>
+                    <img src="{{ url_for('download_file', filename=image) }}" alt="Uploaded Image" class="image-thumbnail">
+                </div>
+                {% endfor %}
             </div>
-
-
-
         </div>
 
         <!-- Download Button -->
