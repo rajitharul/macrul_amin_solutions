@@ -706,6 +706,12 @@ def download_form(form_id):
     if os.path.exists(reference_pictures_path):
         merger.append(reference_pictures_path)
     
+
+    # Append final_attatchment.pdf.pdf
+    if os.path.exists("final_attatchment.pdf"):
+        merger.append("final_attatchment.pdf")
+
+
     # Write the final merged PDF
     merger.write(final_pdf_path)
     merger.close()
