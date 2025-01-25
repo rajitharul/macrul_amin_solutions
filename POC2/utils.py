@@ -9,6 +9,7 @@ from reportlab.lib.units import inch
 from PIL import Image, ImageDraw, ImageFont
 import os
 
+import platform
 def reference_images_to_pdf(form_id):
     # Path to the folder containing images
     image_folder = f"uploads/{form_id}"
@@ -160,3 +161,107 @@ def generate_cover_pdf(form_id, property_name):
     # Save the PDF
     c.save()
     return pdf_path
+
+
+
+
+
+def wrap_text(text, font, max_width):
+    """
+    Function to wrap text into multiple lines if it exceeds the max width.
+    Uses getbbox() to get the width of the text.
+    """
+    lines = []
+    words = text.split()
+    current_line = ""
+    
+    for word in words:
+        # Check if adding the word exceeds the max width
+        test_line = current_line + " " + word if current_line else word
+        bbox = font.getbbox(test_line)  # Get the bounding box of the text
+        width = bbox[2] - bbox[0]  # The width is the difference between the right and left bounds
+
+        if width <= max_width:
+            current_line = test_line
+        else:
+            lines.append(current_line)
+            current_line = word  # Start a new line with the current word
+    lines.append(current_line)  # Add the last line
+    return lines
+
+
+def generate_second_page_with_info(address, assessment_date, next_assessment_date, assessor, responsible_person, form_id):
+    # Load the image
+    image_path = "second_page_template.png"
+    # Define the output path with dynamic form_id
+    output_path = f"downloads/second_page/second_page_{form_id}.pdf"
+
+    # Check if the directory exists, and create it if it doesn't
+    directory = os.path.dirname(output_path)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    image = Image.open(image_path)
+
+    # Create a drawing object
+    draw = ImageDraw.Draw(image)
+
+    # Specify the correct font path for Mac
+    font_path_mac = "/Library/Fonts/Arial Unicode.ttf"  # Correct font for Mac
+
+    # Try to detect if the system is Mac or Linux
+    system = platform.system()
+
+    if system == 'Darwin':  # For macOS
+        font_path = font_path_mac
+    elif system == 'Linux':  # For Linux
+        font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"  # Example for Linux
+    else:
+        font_path = "/path/to/your/font.ttf"  # Provide your custom font
+
+    # Load the font with a larger size
+    font = ImageFont.truetype(font_path, size=30)  # Adjust font size as needed
+
+    # Define max width for the text (width before splitting)
+    max_width = 500  # This is just an example, adjust based on your image's layout
+
+    # Wrap address if it's too long
+    address_lines = wrap_text(address, font, max_width)
+
+    # List of texts and their corresponding positions
+    texts = [
+        (address_lines[0], (180, 540)),  # First line of address
+        (address_lines[1] if len(address_lines) > 1 else '', (180, 580)),  # Second line of address, if it exists
+        (assessment_date, (180, 670)),
+        (next_assessment_date, (180, 780)),
+        (assessor, (180, 900)),
+        (responsible_person, (180, 1100)),
+    ]
+
+    # Set text color to black
+    text_color = (0, 0, 0)  # Black color (R, G, B)
+
+    # Add text to the image
+    for text, position in texts:
+        draw.text(position, text, fill=text_color, font=font)
+
+    # Convert the image to RGB if it's not already in that mode
+    image = image.convert("RGB")
+
+    # Define A4 size at 300 DPI (A4 size is 595 x 842 pixels at 72 DPI, but at 300 DPI it's 2480 x 3508 pixels)
+    a4_size_dpi_300 = (2480, 3508)  # A4 dimensions at 300 DPI
+
+    # Resize the image to fit A4 size with high quality
+    image = image.resize(a4_size_dpi_300, Image.Resampling.LANCZOS)  # Using LANCZOS for high-quality resampling
+
+    # Save the image as a PDF with 300 DPI for high quality
+    image.save(output_path, "PDF", resolution=300)
+
+    print(f"Image saved at {output_path}")
+
+    print(f"Image saved at {output_path}")
+
+    return output_path
+
+
+

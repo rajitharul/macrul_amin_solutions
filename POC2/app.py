@@ -7,12 +7,16 @@ import pdfkit
 from PyPDF2 import PdfMerger
 from datetime import datetime
 from werkzeug.utils import secure_filename
-from utils import generate_cover_pdf, reference_images_to_pdf
+from utils import generate_cover_pdf, generate_second_page_with_info, reference_images_to_pdf
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import send_from_directory
 import os
 
 
+from sqlalchemy.orm import aliased
+from PIL import Image, ImageDraw, ImageFont
+import platform
+import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///forms.db'
@@ -55,7 +59,25 @@ def fill_blanks_with_coordinates(form_id,fill_values):
 
 
 
+def get_answer_by_form_id(form_id):
+    # Query each question separately by form_id and question_id
+    address = db.session.query(PrimaryAnswer.answer).filter_by(form_id=form_id, question_id="0.02").first()
+    assessment_date = db.session.query(PrimaryAnswer.answer).filter_by(form_id=form_id, question_id="0.08").first()
+    next_assessment_date = db.session.query(PrimaryAnswer.answer).filter_by(form_id=form_id, question_id="0.08").first()
+    assessor = db.session.query(PrimaryAnswer.answer).filter_by(form_id=form_id, question_id="0.04").first()
+    responsible_person = db.session.query(PrimaryAnswer.answer).filter_by(form_id=form_id, question_id="0.01").first()
 
+    # Check if all results are found
+    if address and assessment_date and next_assessment_date and assessor and responsible_person:
+        return {
+            "address": address[0],  # Extracting the answer from the tuple
+            "assessment_date": assessment_date[0],
+            "next_assessment_date": next_assessment_date[0],
+            "assessor": assessor[0],
+            "responsible_person": responsible_person[0]
+        }
+    else:
+        return None
 
 
 
@@ -614,6 +636,20 @@ def download_form(form_id):
     cover_pdf_path = generate_cover_pdf(form_id,property_name)
 
 
+    answer_data = get_answer_by_form_id(form_id)
+    if answer_data:
+        second_page_path = generate_second_page_with_info(
+            answer_data["address"],                # Address
+            answer_data["assessment_date"],        # Assessment Date
+            answer_data["next_assessment_date"],   # Next Assessment Date
+            answer_data["assessor"],               # Assessor
+            answer_data["responsible_person"],     # Responsible person
+            form_id                                # Form ID
+        )
+    else:
+        print(f"No answers found for form_id: {form_id}")
+
+    
     # Ensure data exists
     if not primary_answers and not answers:
         return "No data found for this form.", 404
@@ -650,7 +686,10 @@ def download_form(form_id):
     # Check and append the cover page first
     if os.path.exists(cover_page_path):
         merger.append(cover_page_path)
-    
+       
+    # Append the second_page_path after the cover page
+    if os.path.exists(second_page_path):
+        merger.append(second_page_path)
     # Append the cover_pdf_path after the cover page
     if os.path.exists(cover_pdf_path):
         merger.append(cover_pdf_path)
