@@ -297,7 +297,8 @@ class Form(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     form_id = db.Column(db.String(50), unique=True, nullable=False)
     form_type = db.Column(db.String(20), nullable=False)  # new column to store form type
-
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    property_name = db.Column(db.String(100), nullable=True)
 
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -323,23 +324,7 @@ class User(db.Model):
 
 
 
-# @app.route('/register', methods=['GET', 'POST'])
-# def register():
-#     if request.method == 'POST':
-#         username = request.form['username']
-#         password = request.form['password']
-        
-#         # Generate the hashed password
-#         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-        
-#         # Add the user to the database
-#         new_user = User(username=username, password=hashed_password)
-#         db.session.add(new_user)
-#         db.session.commit()
-        
-#         return redirect(url_for('login'))
-    
-#     return render_template('register.html')
+
 
 
 
@@ -385,6 +370,51 @@ def logout():
     session.clear()  # Clear the session
     return redirect(url_for('login'))
 
+@app.route('/register', methods=['GET', 'POST'])
+@login_required
+def register():
+
+       # Check if current logged-in user is admin
+    if session.get('username') != 'admin':
+       return "Registration is only allowed for admin user", 403
+
+    # Count existing users
+    total_users = User.query.count()
+    
+    # Maximum users allowed
+    MAX_USERS = 5
+    
+    if total_users >= MAX_USERS:
+        return "Maximum number of users already registered. Contact administrator.", 403
+
+
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        admin_username = 'admin'  # Set your predefined admin username
+        
+
+        
+        # Generate the hashed password
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+        
+        # Check if admin user already exists
+        existing_admin = User.query.filter_by(username=username).first()
+        if existing_admin:
+            return "Admin user already exists", 400
+        
+        # Add the user to the database
+        new_user = User(username=username, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        
+        return redirect(url_for('login'))
+    
+    return render_template('register.html')
+
+
+
+
 
 @app.route('/')
 @login_required
@@ -393,16 +423,20 @@ def index():
     return render_template('index.html', forms=forms)
 
 
-
 @app.route('/form/new', methods=['GET', 'POST'])
 @login_required
 def create_form():
     if request.method == 'POST':
         form_id = request.form['form_id']
-        form_type = request.form['form_type']  # Get the form type from the form
+        form_type = request.form['form_type']
+        property_name = request.form.get('property_name', '')  # Get property name, default to empty string
 
-        # Create a new form with the selected form_type
-        new_form = Form(form_id=form_id, form_type=form_type)
+        # Create a new form with the selected form_type and property_name
+        new_form = Form(
+            form_id=form_id, 
+            form_type=form_type, 
+            property_name=property_name
+        )
         db.session.add(new_form)
         db.session.commit()
 
@@ -573,8 +607,11 @@ def download_form(form_id):
 
     # Images section generation
     reference_images_to_pdf(form_id)
+    
+    form = Form.query.filter_by(form_id=form_id).first()
+    property_name = form.property_name if form else "Sample Building Name"
 
-    cover_pdf_path = generate_cover_pdf(form_id, "Sample Building Name")
+    cover_pdf_path = generate_cover_pdf(form_id,property_name)
 
 
     # Ensure data exists

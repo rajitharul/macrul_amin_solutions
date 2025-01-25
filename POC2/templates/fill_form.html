@@ -73,6 +73,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>Fill Form {{ form_id }}</h2>
@@ -109,8 +110,8 @@
                 <input type="file" name="images" multiple accept="image/*">
             </div>
             <div>
-                <label>Building Cover Image:</label>
-                <input type="file" name="building_cover_image" accept="image/*">
+                <label>Building Cover Image (Mandatory):</label>
+                <input type="file" name="building_cover_image" accept="image/*" required>
             </div>
             <hr>
 
@@ -129,6 +130,16 @@
                 }
             });
         });
+
+        // Ensure only one building cover image can be uploaded
+        const coverImageInput = document.querySelector('input[name="building_cover_image"]');
+        coverImageInput.addEventListener('change', function(e) {
+            if (this.files.length > 1) {
+                alert('Only one building cover image can be uploaded.');
+                this.value = ''; // Clear the input
+            }
+        });
     </script>
 </body>
+
 </html>

@@ -193,5 +193,48 @@
             </div>
         </form>
     </div>
+    <script>
+        // Cover Image Validation
+        const coverImageInput = document.querySelector('input[name="building_cover_image"]');
+        const coverImageDeleteCheckbox = document.querySelector('input[name="delete_cover_image"]');
+        
+        // Additional Images Validation
+        const additionalImagesInput = document.querySelector('input[name="images"]');
+    
+        // Validation function
+        function validateImageUploads() {
+            // Cover Image Validation
+            if (coverImageDeleteCheckbox && coverImageDeleteCheckbox.checked) {
+                if (!coverImageInput.files.length) {
+                    alert('You must upload a new cover image if deleting the existing one.');
+                    coverImageDeleteCheckbox.checked = false;
+                    return false;
+                }
+            }
+    
+            // Cover Image Single File Check
+            if (coverImageInput.files.length > 1) {
+                alert('Only one cover image can be uploaded.');
+                coverImageInput.value = ''; // Clear the input
+                return false;
+            }
+    
+            // Additional Images Validation
+            if (additionalImagesInput.files.length > 5) {
+                alert('You can upload a maximum of 5 additional images.');
+                additionalImagesInput.value = ''; // Clear the input
+                return false;
+            }
+    
+            return true;
+        }
+    
+        // Attach validation to form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (!validateImageUploads()) {
+                e.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+    </script>
 </body>
 </html>

@@ -167,12 +167,33 @@
             background-color: #004e4b; /* Darker teal for "edit" */
             transform: translateY(-2px);
         }
+
+
+        /* Adjust table to accommodate new columns */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            font-size: 16px;
+        }
     </style>
 </head>
+
 <body>
     <header>
         Welcome to Amin Constructions Assessment Form Handler
-        <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+        <div class="header-buttons">
+            {% if session['username'] == 'admin' %}
+            <a href="{{ url_for('register') }}" class="logout-button">Register</a>
+            {% endif %}
+            <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+        </div>
     </header>
 
     <div class="welcome-section">
@@ -187,6 +208,9 @@
             <thead>
                 <tr>
                     <th>Form ID</th>
+                    <th>Property Name</th>
+                    <th>Form Type</th>
+                    <th>Date Created</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -194,6 +218,9 @@
                 {% for form in forms %}
                 <tr>
                     <td>{{ form.form_id }}</td>
+                    <td>{{ form.property_name or 'N/A' }}</td>
+                    <td>{{ form.form_type }}</td>
+                    <td>{{ form.date_created.strftime('%Y-%m-%d') if form.date_created else '-' }}</td>
                     <td>
                         <div class="action-buttons">
                             <a href="{{ url_for('view_form', form_id=form.form_id) }}" class="view-button">View</a>
@@ -206,4 +233,6 @@
         </table>
     </div>
 </body>
+
+
 </html>
