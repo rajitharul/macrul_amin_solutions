@@ -71,6 +71,22 @@
         button:hover {
             background-color: #45a049;
         }
+
+
+        .primary-question-textarea {
+        width: 100%;
+        height:25px; /* Smaller height for primary question textareas */
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 6px; /* Reduced padding */
+        font-size: 14px;
+        }
+
+        .primary-question-textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            }
+
     </style>
 </head>
 
@@ -82,10 +98,9 @@
             <h2>Primary Questions</h2>
             {% for question in primary_questions %}
             <div>
-                <label>{{ question['id'] }}: {{ question['question'] }}</label><br>
-                <textarea name="primary-answer-{{ question['id'] }}" required>-</textarea>
+                <label>{{ question['id'] }}: {{ question['question'] }}</label>
+                <textarea class="primary-question-textarea" name="primary-answer-{{ question['id'] }}" required>-</textarea>
             </div>
-            <hr>
             {% endfor %}
 
             <h2>Additional Questions</h2>
