@@ -11,7 +11,9 @@ from utils import generate_cover_pdf, generate_second_page_with_info, reference_
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import send_from_directory
 import os
-
+from flask import flash
+import os
+import shutil
 
 from sqlalchemy.orm import aliased
 from PIL import Image, ImageDraw, ImageFont
@@ -443,6 +445,71 @@ def register():
 def index():
     forms = Form.query.all()
     return render_template('index.html', forms=forms)
+
+
+@app.route('/form/<form_id>/delete', methods=['POST'])
+@login_required
+def delete_form(form_id):
+    try:
+        # Delete associated records from Answer table
+        Answer.query.filter_by(form_id=form_id).delete()
+        
+        # Delete associated records from PrimaryAnswer table
+        PrimaryAnswer.query.filter_by(form_id=form_id).delete()
+        
+        # Delete the Form record
+        form = Form.query.filter_by(form_id=form_id).first()
+        if form:
+            db.session.delete(form)
+        
+        # Commit database changes
+        db.session.commit()
+        
+        # Define all directories to check
+        downloads_dir = 'downloads'
+        property_cover_dir = os.path.join('downloads', 'property_cover_page')
+        second_page_dir = os.path.join('downloads', 'second_page')
+        uploads_dir = os.path.join('uploads', form_id)
+        
+        # Function to safely delete files containing form_id in their name
+        def delete_matching_files(directory):
+            if os.path.exists(directory) and os.path.isdir(directory):
+                for filename in os.listdir(directory):
+                    if form_id in filename:
+                        file_path = os.path.join(directory, filename)
+                        if os.path.exists(file_path) and os.path.isfile(file_path):
+                            try:
+                                os.remove(file_path)
+                                print(f"Deleted file: {file_path}")
+                            except Exception as e:
+                                print(f"Error deleting file {file_path}: {e}")
+        
+        # Delete files from main downloads directory
+        delete_matching_files(downloads_dir)
+        
+        # Delete files from property_cover_page directory
+        delete_matching_files(property_cover_dir)
+        
+        # Delete files from second_page directory
+        delete_matching_files(second_page_dir)
+        
+        # Delete the entire uploads folder for this form
+        if os.path.exists(uploads_dir) and os.path.isdir(uploads_dir):
+            try:
+                shutil.rmtree(uploads_dir)
+                print(f"Deleted directory: {uploads_dir}")
+            except Exception as e:
+                print(f"Error deleting uploads folder {uploads_dir}: {e}")
+        
+        flash('Form and all associated files deleted successfully', 'success')
+        return redirect(url_for('index'))
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error during form deletion: {str(e)}")
+        flash(f'Error deleting form: {str(e)}', 'error')
+        return redirect(url_for('index'))
+    
 
 
 @app.route('/form/new', methods=['GET', 'POST'])
