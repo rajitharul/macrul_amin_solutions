@@ -90,7 +90,6 @@ def reference_images_to_pdf(form_id):
     c.save()
     
     return output_pdf_path
-
 def generate_cover_pdf(form_id, property_name):
     # Create download/property_cover_page directory if it doesn't exist
     cover_page_dir = os.path.join("downloads", "property_cover_page")
@@ -107,14 +106,26 @@ def generate_cover_pdf(form_id, property_name):
     c.setFillColorRGB(1, 1, 1)  # White background
     c.rect(0, 0, width, height, fill=1, stroke=0)
     
-    # Company Header (bright red color)
-    c.setFillColorRGB(1, 0.192, 0.192)  # Bright red color (#FF3131 in RGB)
+    # Darker Red Color for Highlight
+    dark_red_color = (0.5, 0, 0)  # Darker red RGB
+    
+    # Normal Height for Highlighted Area
+    highlight_height = 0.6 * inch  # Normal height for the highlighted area
+    header_margin = 50  # Margin from the sides
+    c.setFillColorRGB(*dark_red_color)  # Use darker red color
+    c.rect(header_margin, height - highlight_height - 1.8 * inch, width - 2 * header_margin, highlight_height, fill=1, stroke=0)
+    
+    # Property Name Header Text (white)
+    c.setFillColorRGB(1, 1, 1)  # White color for text
     c.setFont("Helvetica-Bold", 24)  # Larger font size
-    c.drawCentredString(width/2, height - 2*inch, "Amin Constructions")
-        
-    # Subtitle (dark red color)
-    c.setFont("Helvetica-Bold", 18)  # Bold font with larger size
-    c.drawCentredString(width/2, height - 2.5*inch, "Fire Risk Assessment Report")
+    
+    # Calculate vertical centering of the text within the highlighted area
+    text_height = 24  # Approximate height of the text (based on font size)
+    highlight_top = height - 1.8 * inch  # Top position of the highlighted area
+    highlight_bottom = highlight_top - highlight_height  # Bottom position of the highlighted area
+    text_y_position = highlight_bottom + (highlight_height / 2) - (text_height / 4)  # Vertically centered
+    
+    c.drawCentredString(width / 2, text_y_position, property_name)
     
     # Try to find and add cover image
     cover_image_folder = os.path.join("uploads", form_id, "cover_image")
@@ -143,28 +154,24 @@ def generate_cover_pdf(form_id, property_name):
     # Property Details Below Image (dark black color)
     c.setFillColorRGB(0, 0, 0)  # Dark black color
     c.setFont("Helvetica-Bold", 16)
-    c.drawCentredString(width/2, height / 2 - scaled_height/2 - 50, f"Property: {property_name}")
+    c.drawCentredString(width / 2, height / 2 - scaled_height / 2 - 50, f"Property: {property_name}")
     
     # Form ID
     c.setFont("Helvetica", 12)
-    c.drawCentredString(width/2, height / 2 - scaled_height/2 - 80, f"Assessment ID: {form_id}")
+    c.drawCentredString(width / 2, height / 2 - scaled_height / 2 - 80, f"Assessment ID: {form_id}")
     
     # Date
     current_date = datetime.now().strftime("%d %B %Y")
-    c.drawCentredString(width/2, height / 2 - scaled_height/2 - 110, f"Date: {current_date}")
+    c.drawCentredString(width / 2, height / 2 - scaled_height / 2 - 110, f"Date: {current_date}")
     
     # Footer (dark black color)
     c.setFillColorRGB(0, 0, 0)  # Dark black color
     c.setFont("Helvetica", 10)
-    c.drawCentredString(width/2, 50, "© 2024 Amin Constructions. All Rights Reserved.")
+    c.drawCentredString(width / 2, 50, "© 2024 Amin Constructions. All Rights Reserved.")
     
     # Save the PDF
     c.save()
     return pdf_path
-
-
-
-
 
 def wrap_text(text, font, max_width):
     """
@@ -216,6 +223,8 @@ def generate_second_page_with_info(address, assessment_date, next_assessment_dat
         font_path = font_path_mac
     elif system == 'Linux':  # For Linux
         font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"  # Example for Linux
+    elif system == 'Windows':  # For Windows
+        font_path = "C:\\Windows\\Fonts\\arial.ttf"  # Example for Windows
     else:
         font_path = "/path/to/your/font.ttf"  # Provide your custom font
 
