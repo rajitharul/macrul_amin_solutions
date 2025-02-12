@@ -11,6 +11,15 @@ import os
 
 import platform
 
+import os
+from reportlab.lib.pagesizes import A4 
+from reportlab.lib.units import inch 
+from reportlab.pdfgen import canvas 
+from PIL import Image
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.platypus import Paragraph
+from reportlab.lib.enums import TA_CENTER
+
 def reference_images_to_pdf(form_id):
     # Path to the folder containing images
     image_folder = f"uploads/{form_id}"
@@ -25,14 +34,16 @@ def reference_images_to_pdf(form_id):
     c = canvas.Canvas(output_pdf_path, pagesize=A4)
     width, height = A4
     
-    # Calculate image size (1/3rd of A4 width minus padding)
-    img_size = (width - 2 * inch - 2 * 0.5 * inch) / 3  # Adjusted for margins and padding
+    # Margins
+    margin_x = 0.75 * inch  # Symmetric left and right margins
+    margin_y = 0.5 * inch  # Top and bottom margins
     
-    # Margins and padding
-    margin_x = inch  # Left and right margins
-    margin_y = 0.5 * inch  # Reduced top and bottom margins
-    vertical_padding = 0.5 * inch  # Space between rows of images
-    horizontal_padding = 0.5 * inch  # Space between columns of images
+    # Horizontal and vertical spacing
+    horizontal_padding = 0.5 * inch  # Space between columns
+    vertical_padding = 0.3 * inch  # Space between rows
+    
+    # Calculate image size to fit two columns with symmetric margins
+    img_size = (width - 2 * margin_x - horizontal_padding) / 2
     
     # White background for the entire page
     c.setFillColorRGB(1, 1, 1)
@@ -49,7 +60,7 @@ def reference_images_to_pdf(form_id):
     header_padding = 0.2 * inch  # Padding around the text
     
     # Dark red background for the header
-    c.setFillColorRGB(0.5, 0, 0)  # Dark red color
+    c.setFillColorRGB(0.9, 0, 0)  # Dark red color
     c.rect(
         (width - text_width) / 2 - header_padding,  # X position (centered)
         height - margin_y - text_height - header_padding,  # Y position
@@ -65,16 +76,26 @@ def reference_images_to_pdf(form_id):
     c.drawCentredString(width / 2, height - margin_y - text_height, header_text)
     
     # Get list of image files
-    image_files = [f for f in os.listdir(image_folder) 
+    image_files = [f for f in os.listdir(image_folder)
                    if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
     
-    # Track vertical position and page number
-    y_position = height - margin_y - 1.5 * inch - (text_height + 2 * header_padding)  # Adjusted for header
-    page_number = 1
+    # Caption style
+    caption_style = ParagraphStyle(
+        'CaptionStyle',
+        fontName='Helvetica',
+        fontSize=10,
+        textColor='black',
+        alignment=TA_CENTER,
+        leading=12  # Line height
+    )
+    
+    # Track vertical position - minimal gap, start very close to the header
+    y_position = height - margin_y - 0.2 * inch - (text_height + 2 * header_padding)
+    
+    # X positions for two columns with symmetric margins
     x_positions = [
         margin_x, 
-        margin_x + img_size + horizontal_padding, 
-        margin_x + 2 * (img_size + horizontal_padding)
+        margin_x + img_size + horizontal_padding
     ]
     current_column = 0
     
@@ -91,25 +112,35 @@ def reference_images_to_pdf(form_id):
         aspect_ratio = img_height / img_width
         scaled_height = img_size * aspect_ratio
         
-        # Check if we need a new page
-        if y_position - scaled_height < margin_y:
-            c.showPage()
-            page_number += 1
-            y_position = height - margin_y - 1.5 * inch - (text_height + 2 * header_padding)  # Adjusted for header
-            current_column = 0
-        
         # Draw image
-        c.drawImage(image_path, x_positions[current_column], y_position - scaled_height, 
+        c.drawImage(image_path, x_positions[current_column], y_position - scaled_height,
                     width=img_size, height=scaled_height, preserveAspectRatio=True)
+        
+        # Add image name below the image
+        image_name = os.path.splitext(filename)[0]  # Remove file extension
+        
+        # Prepare paragraph for caption
+        para = Paragraph(image_name, caption_style)
+        
+        # Calculate paragraph height
+        para_width = img_size
+        para_height = para.wrap(para_width, 100)[1]
+        
+        # Position caption below the image with some padding
+        caption_y = y_position - scaled_height - 15 - para_height
+        
+        # Draw the paragraph
+        para.drawOn(c, x_positions[current_column], caption_y)
         
         # Move to next column/row
         current_column += 1
-        if current_column > 2:
+        if current_column > 1:
             current_column = 0
-            y_position -= scaled_height + vertical_padding
+            y_position -= scaled_height + vertical_padding + para_height + 30  # Move to next row
     
     # Save PDF
     c.save()
+
 
 
 def generate_cover_pdf(form_id, property_name):
@@ -129,19 +160,25 @@ def generate_cover_pdf(form_id, property_name):
     c.rect(0, 0, width, height, fill=1, stroke=0)
     
     # Darker Red Color for Highlight
-    dark_red_color = (0.5, 0, 0)  # Darker red RGB
+    dark_red_color = (0.9, 0, 0)  # Darker red RGB
     
-    # Thicker Highlighted Area for Property Name
-    highlight_height = 1.2 * inch  # Increased height for the highlighted area
+    # Slimmer Highlighted Area for Property Name
+    highlight_height = 0.5 * inch  # Reduced height for a slimmer highlighted area
     header_margin = 50  # Margin from the sides
+    
+    # Calculate the y-position of the highlighted area
+    highlight_y_position = height - 1.8 * inch - highlight_height  # Adjusted y-position
+    
+    # Draw the highlighted rectangle
     c.setFillColorRGB(*dark_red_color)  # Use darker red color
-    c.rect(header_margin, height - highlight_height - 1.8 * inch, width - 2 * header_margin, highlight_height, fill=1, stroke=0)
+    c.rect(header_margin, highlight_y_position, width - 2 * header_margin, highlight_height, fill=1, stroke=0)
     
     # Property Name Header Text (white)
     c.setFillColorRGB(1, 1, 1)  # White color for text
     c.setFont("Helvetica-Bold", 24)  # Larger font size
+    
     # Adjust the vertical position of the text to center it within the highlighted area
-    text_y_position = height - 1.8 * inch - (highlight_height / 2) + 12  # Adjusted for vertical centering
+    text_y_position = highlight_y_position + (highlight_height / 2) - 8  # Adjusted for vertical centering
     c.drawCentredString(width / 2, text_y_position, property_name)
     
     # Try to find and add cover image
@@ -184,12 +221,11 @@ def generate_cover_pdf(form_id, property_name):
     # Footer (dark black color)
     c.setFillColorRGB(0, 0, 0)  # Dark black color
     c.setFont("Helvetica", 10)
-    c.drawCentredString(width / 2, 50, "© 2024 Amin Constructions. All Rights Reserved.")
+    c.drawCentredString(width / 2, 50, "© Amin Constructions. All Rights Reserved.")
     
     # Save the PDF
     c.save()
     return pdf_path
-
 
 
 

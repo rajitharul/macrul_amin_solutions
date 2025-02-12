@@ -19,6 +19,8 @@ from sqlalchemy.orm import aliased
 from PIL import Image, ImageDraw, ImageFont
 import platform
 import os
+import fitz  # PyMuPDF
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///forms.db'
@@ -26,14 +28,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-import fitz  # PyMuPDF
 
 def fill_blanks_with_coordinates(form_id,fill_values):
     input_pdf = "risk_assestment_matrix.pdf"
     coordinates = [
-    (179, 423),  # x=100, y=200
-    (271, 423),  # x=200, y=200
-    (362, 423),  # x=300, y=200
+    (109, 415),  # x=100, y=200
+    (251, 415),  # x=200, y=200
+    (352, 415),  # x=300, y=200
     ]
 
     output_pdf_path = f"downloads/risk_assestment_matrix_output{form_id}.pdf"
@@ -53,7 +54,7 @@ def fill_blanks_with_coordinates(form_id,fill_values):
     for i, (x, y) in enumerate(coordinates):
         if i < len(fill_values):
             text = str(fill_values[i])
-            page.insert_text((x, y), text, fontsize=8, color=(0, 0, 0))
+            page.insert_text((x, y), text, fontsize=10, color=(0, 0, 0))
 
     # Save the modified PDF
     pdf_document.save(output_pdf_path)
@@ -64,8 +65,8 @@ def fill_blanks_with_coordinates(form_id,fill_values):
 def get_answer_by_form_id(form_id):
     # Query each question separately by form_id and question_id
     address = db.session.query(PrimaryAnswer.answer).filter_by(form_id=form_id, question_id="0.02").first()
-    assessment_date = db.session.query(PrimaryAnswer.answer).filter_by(form_id=form_id, question_id="0.08").first()
-    next_assessment_date = db.session.query(PrimaryAnswer.answer).filter_by(form_id=form_id, question_id="0.08").first()
+    assessment_date = db.session.query(PrimaryAnswer.answer).filter_by(form_id=form_id, question_id="0.07").first()
+    next_assessment_date = db.session.query(PrimaryAnswer.answer).filter_by(form_id=form_id, question_id="0.09").first()
     assessor = db.session.query(PrimaryAnswer.answer).filter_by(form_id=form_id, question_id="0.04").first()
     responsible_person = db.session.query(PrimaryAnswer.answer).filter_by(form_id=form_id, question_id="0.01").first()
 
