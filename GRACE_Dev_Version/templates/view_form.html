@@ -177,7 +177,7 @@
             {% for answer in answers %}
             {% if answer.question_id.endswith('.00') %}
             <!-- Highlighted Section Headers -->
-            <tr style="background-color: #4CAF50; color: white; font-weight: bold;">
+            <tr style="background-color: #ffdddd; color: rgb(0, 0, 0); font-weight: bold;">
                 <td colspan="6">{{ answer.question_id }}: {{ answer.question }}</td>
             </tr>
             {% else %}
@@ -206,7 +206,7 @@
             {% if answer.answer == "No" %}
                 {% if answer.question_id.endswith('.00') %}
                 <!-- Highlighted Section Headers -->
-                <tr style="background-color: #4CAF50; color: white; font-weight: bold;">
+                <tr style="background-color: #ffdddd; color: rgb(0, 0, 0); font-weight: bold;">
                     <td colspan="6">{{ answer.question_id }}: {{ answer.question }}</td>
                 </tr>
                 {% else %}

@@ -22,7 +22,7 @@
 
         h1 {
             text-align: center;
-            color: #4CAF50;
+            color: #ffdddd;
             margin-bottom: 20px;
         }
 
@@ -46,7 +46,7 @@
 
         textarea:focus, input:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #ffdddd;
         }
 
         hr {
@@ -61,7 +61,7 @@
             padding: 10px;
             font-size: 16px;
             color: white;
-            background-color: #4CAF50;
+            background-color: #ffdddd;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -83,7 +83,7 @@
 
         .primary-question-textarea:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #ffdddd;
         }
 
         .hidden {
@@ -110,7 +110,7 @@
             <div>
                 {% if question['id'].endswith('.00') %}
                     <!-- Highlighted Section Headers -->
-                    <h3 style="background-color: #4CAF50; color: white; padding: 10px; border-radius: 5px;">{{ question['id'] }}: {{ question['question'] }}</h3>
+                    <h3 style="background-color: #ffdddd; color: rgb(0, 0, 0); padding: 10px; border-radius: 5px;">{{ question['id'] }}: {{ question['question'] }}</h3>
                 {% else %}
                     <label>{{ question['id'] }}: {{ question['question'] }}</label><br>
                     <input type="radio" name="answer-{{ question['id'] }}" value="Yes" checked required onclick="toggleControlMeasures('{{ question['id'] }}')"> Yes
