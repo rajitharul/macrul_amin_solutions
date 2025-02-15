@@ -37,14 +37,14 @@
 
         textarea {
             width: 100%;
-            height: 50px; /* Reduced height */
+            height: 50px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            padding: 8px; /* Reduced padding */
+            padding: 8px;
             font-size: 14px;
         }
 
-        textarea:focus {
+        textarea:focus, input:focus {
             outline: none;
             border-color: #4CAF50;
         }
@@ -72,21 +72,23 @@
             background-color: #45a049;
         }
 
-
         .primary-question-textarea {
-        width: 100%;
-        height:25px; /* Smaller height for primary question textareas */
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 6px; /* Reduced padding */
-        font-size: 14px;
+            width: 100%;
+            height: 25px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 6px;
+            font-size: 14px;
         }
 
         .primary-question-textarea:focus {
             outline: none;
             border-color: #4CAF50;
-            }
+        }
 
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 
@@ -106,22 +108,35 @@
             <h2>Additional Questions</h2>
             {% for question in questions %}
             <div>
-                <label>{{ question['id'] }}: {{ question['question'] }}</label><br>
-                <input type="radio" name="answer-{{ question['id'] }}" value="Yes" checked required> Yes
-                <input type="radio" name="answer-{{ question['id'] }}" value="No" required> No
-                <input type="radio" name="answer-{{ question['id'] }}" value="N/A" required> N/A
-                <br>
-                <div id="control-measures-{{ question['id'] }}" style="display: none;">
-                    <label>Control Measures (if "No"):</label>
-                    <textarea name="control-measures-{{ question['id'] }}"></textarea>
-                </div>
+                {% if question['id'].endswith('.00') %}
+                    <!-- Highlighted Section Headers -->
+                    <h3 style="background-color: #4CAF50; color: white; padding: 10px; border-radius: 5px;">{{ question['id'] }}: {{ question['question'] }}</h3>
+                {% else %}
+                    <label>{{ question['id'] }}: {{ question['question'] }}</label><br>
+                    <input type="radio" name="answer-{{ question['id'] }}" value="Yes" checked required onclick="toggleControlMeasures('{{ question['id'] }}')"> Yes
+                    <input type="radio" name="answer-{{ question['id'] }}" value="No" required onclick="toggleControlMeasures('{{ question['id'] }}')"> No
+                    <input type="radio" name="answer-{{ question['id'] }}" value="N/A" required onclick="toggleControlMeasures('{{ question['id'] }}')"> N/A
+                    <br>
+            
+                    <!-- Control Measures, Responsible Person & Target Date (Hidden by Default) -->
+                    <div id="control-section-{{ question['id'] }}" class="hidden">
+                        <label>Control Measures (if "No"):</label>
+                        <textarea id="control-measures-{{ question['id'] }}" name="control-measures-{{ question['id'] }}">{{ question['control_measures'] }}</textarea>
+            
+                        <label>Responsible Person:</label>
+                        <input type="text" name="responsible_person-{{ question['id'] }}">
+            
+                        <label>Target Date:</label>
+                        <input type="date" name="target_date-{{ question['id'] }}">
+                    </div>
+                {% endif %}
             </div>
             <hr>
             {% endfor %}
 
             <h2>Upload Pictures</h2>
             <div>
-                <label>Attach Images: Upload Max 4 Images : Image Names will be printed in the refference images section therefore rename accordingly</label>
+                <label>Attach Images: Upload Max 4 Images</label>
                 <input type="file" name="images" multiple accept="image/*">
             </div>
             <div>
@@ -134,27 +149,46 @@
         </form>
     </div>
     <script>
-        document.querySelectorAll('input[type="radio"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const questionId = this.name.split('-')[1];
-                const controlDiv = document.getElementById(`control-measures-${questionId}`);
-                if (this.value === "No") {
-                    controlDiv.style.display = "block";
+        function toggleControlMeasures(questionId) {
+            let section = document.getElementById(`control-section-${questionId}`);
+            let selectedValue = document.querySelector(`input[name="answer-${questionId}"]:checked`).value;
+    
+            if (selectedValue === "No") {
+                section.classList.remove("hidden");
+    
+                // Dynamically determine section header ID (e.g., "12.01" → "12.00")
+                let sectionHeaderId = questionId.split(".")[0] + ".00";
+    
+                // Automatically update section header (.00) to "No" and ensure it is sent in the form submission
+                let sectionHeaderInput = document.querySelector(`input[name="answer-${sectionHeaderId}"][value="No"]`);
+                if (sectionHeaderInput) {
+                    sectionHeaderInput.checked = true;
                 } else {
-                    controlDiv.style.display = "none";
+                    // If the section header input does not exist, create a hidden input field for it
+                    let form = document.querySelector("form");
+                    let hiddenInput = document.createElement("input");
+                    hiddenInput.type = "hidden";
+                    hiddenInput.name = `answer-${sectionHeaderId}`;
+                    hiddenInput.value = "No";
+                    form.appendChild(hiddenInput);
                 }
+            } else {
+                section.classList.add("hidden");
+            }
+        }
+    
+        // Attach event listeners to all radio buttons
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener("change", function () {
+                    let questionId = this.name.split("-")[1]; // Extract question ID from input name
+                    toggleControlMeasures(questionId);
+                });
             });
         });
-
-        // Ensure only one building cover image can be uploaded
-        const coverImageInput = document.querySelector('input[name="building_cover_image"]');
-        coverImageInput.addEventListener('change', function(e) {
-            if (this.files.length > 1) {
-                alert('Only one building cover image can be uploaded.');
-                this.value = ''; // Clear the input
-            }
-        });
     </script>
-</body>
+    
 
+
+</body>
 </html>

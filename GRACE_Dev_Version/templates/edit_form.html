@@ -137,13 +137,15 @@
                     <th>Details</th>
                     <th>Value</th>
                     <th>Control Measures</th>
+                    <th>Responsible Person</th>
+                    <th>Target Date</th>
                 </tr>
                 {% for question in questions %}
                 <tr>
                     <td>{{ question.id }}</td>
                     <td>{{ question.question }}</td>
                     <td class="form-control">
-                        <select name="answer-{{ question.id }}">
+                        <select name="answer-{{ question.id }}" onchange="toggleFields('{{ question.id }}')">
                             <option value="" {% if not answers.get(question.id) or answers.get(question.id).answer == '' %}selected{% endif %}>Select</option>
                             <option value="Yes" {% if answers.get(question.id) and answers.get(question.id).answer == 'Yes' %}selected{% endif %}>Yes</option>
                             <option value="No" {% if answers.get(question.id) and answers.get(question.id).answer == 'No' %}selected{% endif %}>No</option>
@@ -152,6 +154,16 @@
                     </td>
                     <td>
                         <textarea name="control-measures-{{ question.id }}" placeholder="Control Measures (if No)">{{ answers.get(question.id).control_measures if answers.get(question.id) else '' }}</textarea>
+                    </td>
+                    <td>
+                        <input type="text" name="responsible_person-{{ question.id }}" 
+                               value="{{ answers.get(question.id).responsible_person if answers.get(question.id) else '' }}" 
+                               id="responsible_person-{{ question.id }}">
+                    </td>
+                    <td>
+                        <input type="date" name="target_date-{{ question.id }}" 
+                               value="{{ answers.get(question.id).target_date if answers.get(question.id) else '' }}" 
+                               id="target_date-{{ question.id }}">
                     </td>
                 </tr>
                 {% endfor %}
@@ -235,6 +247,33 @@
                 e.preventDefault(); // Prevent form submission if validation fails
             }
         });
+
+        function toggleFields(questionId) {
+        let answer = document.querySelector(`select[name="answer-${questionId}"]`).value;
+        let responsiblePersonField = document.getElementById(`responsible_person-${questionId}`);
+        let targetDateField = document.getElementById(`target_date-${questionId}`);
+
+        if (answer === "No") {
+            responsiblePersonField.disabled = false;
+            targetDateField.disabled = false;
+        } else {
+            responsiblePersonField.value = "";
+            targetDateField.value = "";
+            responsiblePersonField.disabled = true;
+            targetDateField.disabled = true;
+        }
+    }
+
+    // Disable fields on page load if necessary
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll("select[name^='answer-']").forEach(selectElement => {
+            let questionId = selectElement.name.split('-')[1];
+            toggleFields(questionId);
+        });
+    });
+
+
+
     </script>
 </body>
 </html>

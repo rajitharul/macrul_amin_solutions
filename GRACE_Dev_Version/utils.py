@@ -280,7 +280,7 @@ def generate_second_page_with_info(address, assessment_date, next_assessment_dat
     elif system == 'Linux':  # For Linux
         font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"  # Example for Linux
     else:
-        font_path = "/path/to/your/font.ttf"  # Provide your custom font
+        font_path = "C:\\Windows\\Fonts\\arial.ttf"  # Provide your custom font
 
     # Load the font with a larger size
     font = ImageFont.truetype(font_path, size=30)  # Adjust font size as needed

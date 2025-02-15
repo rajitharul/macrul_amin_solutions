@@ -141,6 +141,8 @@
                     <th>Detail</th>
                     <th>Value</th>
                     <th>Control Measures</th>
+                    <th>Responsible Person</th>
+                    <th>Target Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -151,11 +153,17 @@
                     <td>{{ answer.question }}</td>
                     <td>{{ answer.answer }}</td>
                     <td>{{ answer.control_measures or "-" }}</td>
+                    <td>{{ answer.responsible_person or "-" }}</td>
+                    <td>{{ answer.target_date or "-" }}</td>
                 </tr>
                 {% endif %}
                 {% endfor %}
             </tbody>
         </table>
+
+
+
+
     </div>
 </body>
 </html>

@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fire Risk Assessment Form ID {{ form_id }}</title>
     <style>
-        /* Simplified Color Palette */
         :root {
-            --dark-text: #333333;   /* Dark text color */
-            --accent-color: #006A67; /* Teal accent color */
-            --light-background: #f5f5f5; /* Very light background */
-            --light-hover: #e1e1e1; /* Light hover effect */
-            --light-yellow: #FFF4B7; /* Light Yellow for text */
+            --dark-text: #333333;
+            --accent-color: #006A67;
+            --light-background: #f5f5f5;
+            --light-hover: #e1e1e1;
+            --light-yellow: #FFF4B7;
         }
 
         body {
@@ -45,13 +44,13 @@
             text-decoration: none;
             font-size: 16px;
             padding: 10px 15px;
-            background-color: #004e4b; /* Darker teal */
+            background-color: #004e4b;
             border-radius: 5px;
             transition: background-color 0.3s ease;
         }
 
         header .nav-buttons a:hover {
-            background-color: #003d3a; /* Even darker teal */
+            background-color: #003d3a;
         }
 
         .container {
@@ -76,8 +75,7 @@
             margin: 20px 0;
         }
 
-        table th,
-        table td {
+        table th, table td {
             text-align: left;
             padding: 12px;
             border: 1px solid #ddd;
@@ -89,11 +87,11 @@
         }
 
         table tr:nth-child(even) {
-            background-color: #f9f9f9; /* Light background for alternating rows */
+            background-color: #f9f9f9;
         }
 
         table tr:hover {
-            background-color: var(--light-hover); /* Light hover effect */
+            background-color: var(--light-hover);
         }
 
         .button-container {
@@ -113,7 +111,7 @@
         }
 
         .button-container a button:hover {
-            background-color: #004e4b; /* Darker teal on hover */
+            background-color: #004e4b;
         }
 
         .images-section {
@@ -166,7 +164,6 @@
             {% endfor %}
         </table>
 
-        <!-- Additional Questions -->
         <h2>Detailed Questions</h2>
         <table>
             <tr>
@@ -174,18 +171,27 @@
                 <th>Details</th>
                 <th>Value</th>
                 <th>Control Measures</th>
+                <th>Responsible Person</th>
+                <th>Target Date</th>
             </tr>
             {% for answer in answers %}
+            {% if answer.question_id.endswith('.00') %}
+            <!-- Highlighted Section Headers -->
+            <tr style="background-color: #4CAF50; color: white; font-weight: bold;">
+                <td colspan="6">{{ answer.question_id }}: {{ answer.question }}</td>
+            </tr>
+            {% else %}
             <tr>
                 <td>{{ answer.question_id }}</td>
                 <td>{{ answer.question }}</td>
                 <td>{{ answer.answer }}</td>
                 <td>{{ answer.control_measures or "N/A" }}</td>
+                <td>{{ answer.responsible_person or "N/A" }}</td>
+                <td>{{ answer.target_date or "N/A" }}</td>
             </tr>
+            {% endif %}
             {% endfor %}
         </table>
-
-        <!-- Action Plan -->
         <h2>Action Plan</h2>
         <table>
             <tr>
@@ -193,23 +199,32 @@
                 <th>Details</th>
                 <th>Value</th>
                 <th>Control Measures</th>
+                <th>Responsible Person</th>
+                <th>Target Date</th>
             </tr>
             {% for answer in answers %}
             {% if answer.answer == "No" %}
-            <tr>
-                <td>{{ answer.question_id }}</td>
-                <td>{{ answer.question }}</td>
-                <td>{{ answer.answer }}</td>
-                <td>{{ answer.control_measures or "N/A" }}</td>
-            </tr>
+                {% if answer.question_id.endswith('.00') %}
+                <!-- Highlighted Section Headers -->
+                <tr style="background-color: #4CAF50; color: white; font-weight: bold;">
+                    <td colspan="6">{{ answer.question_id }}: {{ answer.question }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td>{{ answer.question_id }}</td>
+                    <td>{{ answer.question }}</td>
+                    <td>{{ answer.answer }}</td>
+                    <td>{{ answer.control_measures or "N/A" }}</td>
+                    <td>{{ answer.responsible_person or "N/A" }}</td>
+                    <td>{{ answer.target_date or "N/A" }}</td>
+                </tr>
+                {% endif %}
             {% endif %}
             {% endfor %}
         </table>
-
         <!-- Images Section -->
         <div class="images-section">
             <h3>Uploaded Images</h3>
-            <!-- Cover Image -->
             <div class="image-gallery">
                 {% if cover_image %}
                 <div>
