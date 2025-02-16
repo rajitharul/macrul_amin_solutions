@@ -807,6 +807,17 @@ def view_form(form_id):
 @app.route('/form/<form_id>/download', methods=['GET'])
 @login_required
 def download_form(form_id):
+        
+    form = Form.query.filter_by(form_id=form_id).first()
+    if not form:
+        return "Form not found", 404
+
+    # Determine question sets based on form type
+    if form.form_type == 'housing':
+        cover_page_path = "cover_page_housing.pdf"
+    else:
+        cover_page_path = "cover_page_non_housing.pdf"
+
     # Fetch PrimaryAnswer and Answer data
     primary_answers = PrimaryAnswer.query.filter_by(form_id=form_id).all()
     answers = Answer.query.filter_by(form_id=form_id).all()
@@ -898,7 +909,7 @@ def download_form(form_id):
 
 
     # Path to the additional PDFs
-    cover_page_path = "cover_page.pdf"  # Ensure this file exists in your project directory
+    
     risk_assessment_matrix_path = f"downloads/risk_assestment_matrix_output{form_id}.pdf"  # Ensure this file exists in your project directory
     reference_pictures_path = f"downloads/reference_pictures_{form_id}.pdf"  # Path to the reference pictures PDF
 

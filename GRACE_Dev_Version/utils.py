@@ -221,7 +221,7 @@ def generate_cover_pdf(form_id, property_name):
     # Footer (dark black color)
     c.setFillColorRGB(0, 0, 0)  # Dark black color
     c.setFont("Helvetica", 10)
-    c.drawCentredString(width / 2, 50, "© Amin Constructions. All Rights Reserved.")
+    c.drawCentredString(width / 2, 50, "© Amin Contractors. All Rights Reserved.")
     
     # Save the PDF
     c.save()
