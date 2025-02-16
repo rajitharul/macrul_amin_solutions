@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Fire Risk Assessment {{ form_id }}</title>
+    <title>Action Plan Section</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -81,67 +81,45 @@
             color: #777;
         }
 
-        /* Adjust column widths for Primary Information */
-        .primary-table th:nth-child(1), .primary-table td:nth-child(1) { width: 5%; }  /* Index ID */
-        .primary-table th:nth-child(2), .primary-table td:nth-child(2) { width: 40%; } /* Detail */
-        .primary-table th:nth-child(3), .primary-table td:nth-child(3) { width: 55%; } /* Values */
-
-        /* Adjust column widths for Fire Hazards and Their Elimination or Control */
-        .hazard-table th:nth-child(1), .hazard-table td:nth-child(1) { width: 8%; }  /* Index ID */
-        .hazard-table th:nth-child(2), .hazard-table td:nth-child(2) { width: 42%; }  /* Detail */
-        .hazard-table th:nth-child(3), .hazard-table td:nth-child(3) { width: 8%; }  /* Values (Reduced) */
-        .hazard-table th:nth-child(4), .hazard-table td:nth-child(4) { width: 42%; }  /* Control Measures */
+        /* Adjust column widths for Action Plan Section */
+        .action-plan-table th:nth-child(1), .action-plan-table td:nth-child(1) { width: 5%; }  /* Index ID */
+        .action-plan-table th:nth-child(2), .action-plan-table td:nth-child(2) { width: 65%; } /* Significant Findings */
+        .action-plan-table th:nth-child(3), .action-plan-table td:nth-child(3) { width: 15%; } /* Responsible Person */
+        .action-plan-table th:nth-child(4), .action-plan-table td:nth-child(4) { width: 15%; } /* Target Date */
 
     </style>
 </head>
 <body>
-    <header>Fire Risk Assessment Information</header>
+    <header>Action Plan Section</header>
     <div class="container">
 
-        <!-- Primary Information Section -->
-        <h2>Primary Information</h2>
-        <table class="primary-table">
+        <!-- Action Plan Section -->
+        <h2>Action Plan</h2>
+        <table class="action-plan-table">
             <thead>
                 <tr>
                     <th>Index ID</th>
-                    <th>Detail</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for primary_answer in primary_answers %}
-                <tr>
-                    <td>{{ primary_answer.question_id }}</td>
-                    <td>{{ primary_answer.question }}</td>
-                    <td>{{ primary_answer.answer }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <!-- Detailed Questions Section -->
-        <h2>Fire Hazards and Their Elimination or Control</h2>
-        <table class="hazard-table">
-            <thead>
-                <tr>
-                    <th>Index ID</th>
-                    <th>Detail</th>
-                    <th>Values</th>
-                    <th>Control Measures</th>
+                    <th>Significant Findings / Action Plan</th>
+                    <th>Responsible Person</th>
+                    <th>Target Date</th>
                 </tr>
             </thead>
             <tbody>
                 {% for answer in answers %}
+                {% if answer.answer == "No" %}
                 <tr {% if answer.question_id.endswith('.00') %}class="highlight"{% endif %}>
                     <td>{{ answer.question_id }}</td>
-                    <td>{{ answer.question }}</td>
+                    
                     {% if answer.question_id.endswith('.00') %}
-                        <td colspan="2"></td>  <!-- Leave Value & Control Measures Empty -->
+                        <td>{{ answer.question }}</td>    
+                        <td colspan="2"></td>  <!-- Leave Responsible Person & Target Date Empty -->
                     {% else %}
-                        <td>{{ answer.answer }}</td>
                         <td>{{ answer.control_measures or "-" }}</td>
+                        <td>{{ answer.responsible_person or "-" }}</td>
+                        <td>{{ answer.target_date or "-" }}</td>
                     {% endif %}
                 </tr>
+                {% endif %}
                 {% endfor %}
             </tbody>
         </table>

@@ -866,17 +866,36 @@ def download_form(form_id):
         current_date=datetime.now().strftime("%Y-%m-%d")
     )
 
+
+        # Generate HTML content
+    html_content_action_plan = render_template(
+        'form_download_action_plan.html',
+        form_id=form_id,
+        primary_answers=primary_answers,
+        answers=answers,
+        current_date=datetime.now().strftime("%Y-%m-%d")
+    )
+
+
     # Define paths for the PDFs
     generated_pdf_filename = f"{form_id}_generated.pdf"
+    generated_actiona_plan_pdf_filename = f"{form_id}_generated_action_plan.pdf"
+
     merged_pdf_filename = f"{form_id}_merged.pdf"
     final_pdf_filename = f"{form_id}_final.pdf"
     generated_pdf_path = os.path.join("downloads", generated_pdf_filename)
+    generated_action_plan_pdf_path = os.path.join("downloads", generated_actiona_plan_pdf_filename)
+
     merged_pdf_path = os.path.join("downloads", merged_pdf_filename)
     final_pdf_path = os.path.join("downloads", final_pdf_filename)
     os.makedirs("downloads", exist_ok=True)
 
     # Convert HTML to PDF
     pdfkit.from_string(html_content, generated_pdf_path)
+
+    # Convert HTML to PDF
+    pdfkit.from_string(html_content_action_plan, generated_action_plan_pdf_path)
+
 
     # Path to the additional PDFs
     cover_page_path = "cover_page.pdf"  # Ensure this file exists in your project directory
@@ -905,6 +924,11 @@ def download_form(form_id):
     if os.path.exists(risk_assessment_matrix_path):
         merger.append(risk_assessment_matrix_path)
     
+    # Append the generated PDF
+    if os.path.exists(generated_action_plan_pdf_path):
+        merger.append(generated_action_plan_pdf_path)
+
+
     # Append reference pictures if they exist
     if os.path.exists(reference_pictures_path):
         merger.append(reference_pictures_path)
