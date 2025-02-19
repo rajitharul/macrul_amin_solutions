@@ -93,6 +93,7 @@ def get_answer_by_form_id(form_id):
 
 
 PRIMARY_HOUSING_QUESTIONS = [
+    {"id": "0.00", "question": "General Information"},
     {"id": "0.01", "question": "Responsible person (e.g. employer) or person having control of premises?"},
     {"id": "0.02", "question": "Address of premises?"},
     {"id": "0.03", "question": "Person(s) consulted?"},
@@ -141,6 +142,7 @@ PRIMARY_HOUSING_QUESTIONS = [
 
 
 PRIMARY_QUESTIONS = [
+    {"id": "0.00", "question": "General Information"},
     {"id": "0.01", "question": "Responsible person (e.g. employer) or person having control of premises?"},
     {"id": "0.02", "question": "Address of premises?"},
     {"id": "0.03", "question": "Person(s) consulted?"},
@@ -152,6 +154,7 @@ PRIMARY_QUESTIONS = [
     {"id": "0.09", "question": "Suggested date for review?"},
     {"id": "0.10", "question": "Fire Risk Assessment Review?"},
     {"id": "0.11", "question": "Report compliance?"},
+    {"id": "1.00", "question": "THE PREMISES (Clause 12)"},
     {"id": "1.01", "question": "Number of floors at ground level and above?"},
     {"id": "1.02", "question": "Number of floors entirely below ground level?"},
     {"id": "1.03", "question": "Floors on which car parking is provided?"},
@@ -160,18 +163,23 @@ PRIMARY_QUESTIONS = [
     {"id": "1.06", "question": "Approximate floor area on ground floor?"},
     {"id": "1.07", "question": "Details of construction and layout?"},
     {"id": "1.08", "question": "Occupancy?"},
+    {"id": "2.00", "question": "THE OCCUPANTS (Clause 12)"},
     {"id": "2.01", "question": "Approximate maximum number of employees at any one time?"},
     {"id": "2.02", "question": "Approximate maximum number of other occupants at any one time?"},
     {"id": "2.03", "question": "Approximate total number of people present in the building at any one time?"},
+    {"id": "3.00", "question": "OCCUPANTS ESPECIALLY AT RISK FROM FIRE (Clause 12)"},
     {"id": "3.01", "question": "Sleeping occupants?"},
     {"id": "3.02", "question": "Disabled employees?"},
     {"id": "3.03", "question": "Other disabled occupants?"},
     {"id": "3.04", "question": "Occupants in remote areas and lone workers?"},
     {"id": "3.05", "question": "Young persons?"},
     {"id": "3.06", "question": "Others?"},
+    {"id": "4.00", "question": "FIRE LOSS EXPERIENCE"},
     {"id": "4.01", "question": "Fires in past 10 years?"},
     {"id": "4.02", "question": "Cost of past fire losses?"},
+    {"id": "5.00", "question": "OTHER RELEVANT INFORMATION"},
     {"id": "5.01", "question": "Detail if required?"},
+    {"id": "6.00", "question": "RELEVANT FIRE SAFETY LEGISLATION"},
     {"id": "6.01", "question": "The following fire safety legislation applies to these premises?"},
     {"id": "6.02", "question": "The above legislation is enforced by?"},
     {"id": "6.03", "question": "Other legislation that makes significant requirements for fire precautions in these premises?"},
