@@ -100,23 +100,25 @@
 
         <!-- Primary Information Section -->
         <h2>Primary Information</h2>
-        <table class="primary-table">
-            <thead>
-                <tr>
-                    <th>Index ID</th>
-                    <th>Detail</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for primary_answer in primary_answers %}
-                <tr>
-                    <td>{{ primary_answer.question_id }}</td>
-                    <td>{{ primary_answer.question }}</td>
-                    <td>{{ primary_answer.answer }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+        <table>
+            <tr>
+                <th>Index ID</th>
+                <th>Details</th>
+                <th>Value</th>
+            </tr>
+            {% for primary_answer in primary_answers %}
+            {% if primary_answer.question_id.endswith('.00') %}
+            <tr style="background-color: #ffdddd; color: rgb(0, 0, 0); font-weight: bold;">
+                <td colspan="3">{{ primary_answer.question_id }}: {{ primary_answer.question }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td>{{ primary_answer.question_id }}</td>
+                <td>{{ primary_answer.question }}</td>
+                <td>{{ primary_answer.answer }}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
         </table>
 
         <!-- Detailed Questions Section -->
