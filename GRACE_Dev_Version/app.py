@@ -21,13 +21,38 @@ from PIL import Image, ImageDraw, ImageFont
 import platform
 import os
 import fitz  # PyMuPDF
-
+import signal
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///forms.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
+
+# The secret key you'll compare with incoming requests
+SERVER_SECRET_KEY = "adminmacrul"
+
+@app.route("/shutdown", methods=["POST"])
+def shutdown_endpoint():
+    """
+    A shutdown endpoint. Expects JSON in the form:
+    {
+        "secret_key": "..."
+    }
+    """
+    data = request.get_json(silent=True)
+    if not data or 'secret_key' not in data:
+        return jsonify({"error": "No secret key provided"}), 400
+
+    # Compare the received key to the server's key
+    if data["secret_key"] != SERVER_SECRET_KEY:
+        return jsonify({"error": "Invalid secret key"}), 401
+
+    # If valid, shut down the server
+    os.kill(os.getpid(), signal.SIGTERM)  # More reliable method
+    return jsonify({"message": "Server is shutting down..."}), 200
+
 
 
 def fill_blanks_with_coordinates(form_id,fill_values):
