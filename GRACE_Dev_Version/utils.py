@@ -293,12 +293,12 @@ def generate_second_page_with_info(address, assessment_date, next_assessment_dat
 
     # List of texts and their corresponding positions
     texts = [
-        (address_lines[0], (180, 540)),  # First line of address
-        (address_lines[1] if len(address_lines) > 1 else '', (180, 580)),  # Second line of address, if it exists
-        (assessment_date, (180, 670)),
-        (next_assessment_date, (180, 780)),
-        (assessor, (180, 900)),
-        (responsible_person, (180, 1100)),
+        (address_lines[0], (180, 545)),  # First line of address
+        (address_lines[1] if len(address_lines) > 1 else '', (180, 585)),  # Second line of address, if it exists
+        (assessment_date, (180, 673)),
+        (next_assessment_date, (180, 785)),
+        (assessor, (180, 910)),
+        (responsible_person, (180, 1120)),
     ]
 
     # Set text color to black

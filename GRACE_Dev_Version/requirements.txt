@@ -7,3 +7,4 @@ Pillow
 reportlab
 PyMuPDF
 fpdf
+gunicorn

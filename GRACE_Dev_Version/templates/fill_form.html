@@ -20,10 +20,23 @@
             border-radius: 8px;
         }
 
-        h1 {
+        /* Solid red header styling for form ID and form type */
+        .form-id-header {
+            background-color: #004e4b0;
+            color: #fff;
             text-align: center;
-            color: #ffdddd;
-            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 0;
+        }
+
+        .form-type-header {
+            background-color: #004e4b;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 20px 0 10px 0;
         }
 
         form div {
@@ -55,21 +68,23 @@
             margin: 20px 0;
         }
 
+        /* Bold solid red button */
         button {
             display: block;
             width: 100%;
             padding: 10px;
             font-size: 16px;
-            color: white;
-            background-color: #ffdddd;
+            color: #fff;
+            background-color: #004e4b; 
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            font-weight: bold;
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #b30000;
         }
 
         .primary-question-textarea {
@@ -94,8 +109,9 @@
 
 <body>
     <div class="container">
-        <h2>Fill Form {{ form_id }}</h2>
-        <h1>Form Type: {{ form_type }}</h1>
+        <!-- Solid red (darker) header for form type -->
+        <h1 class="form-type-header">Form Type: {{ form_type }} |{{ form_id }} </h1>
+
         <form method="POST" enctype="multipart/form-data">
 
             
@@ -140,8 +156,12 @@
             {% endfor %}
 
             <h2>Upload Pictures</h2>
+            <!-- Add this note below the heading -->
+            <p style="color: #666; font-size: 14px;">
+                Please rename the pictures according to the caption that needs to be printed when adding them to the "Additional Pictures" section.
+            </p>
             <div>
-                <label>Attach Images: Upload Max 4 Images</label>
+                <label>Attach Additional Pictures: Upload Max 4 Images</label>
                 <input type="file" name="images" multiple accept="image/*">
             </div>
             <div>

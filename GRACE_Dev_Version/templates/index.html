@@ -244,7 +244,15 @@
     </div>
 
     <div class="form-list">
+        {% if forms|length >= 10 %}
+        <p style="color: red; text-align: center;">You have reached the maximum of 10 forms. Please delete an existing form before creating a new one.</p>
+        <button class="create-form" style="background-color: #ccc; cursor: not-allowed;" disabled>Create New Form</button>
+    {% else %}
         <a href="{{ url_for('create_form') }}" class="create-form">Create New Form</a>
+    {% endif %}
+    
+
+
         <table>
             <thead>
                 <tr>
