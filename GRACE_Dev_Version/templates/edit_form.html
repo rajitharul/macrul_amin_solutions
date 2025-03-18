@@ -109,6 +109,25 @@
     <header>Edit Fire Risk Assessment: Form {{ form_id }}</header>
     <div class="container">
         <form method="POST" enctype="multipart/form-data">
+            <!-- Form Name Section -->
+            <h2>Form Details</h2>
+            <table>
+                <tr>
+                    <th>Property Name</th>
+                    <td>
+                        <input type="text" name="property_name" value="{{ form.property_name or '' }}" placeholder="Enter property name">
+                    </td>
+                </tr>
+                <tr>
+                    <th>Form ID</th>
+                    <td>{{ form_id }}</td>
+                </tr>
+                <tr>
+                    <th>Form Type</th>
+                    <td>{{ form.form_type }}</td>
+                </tr>
+            </table>
+
             <!-- Primary Information Section -->
             <h2>Primary Information</h2>
             <table>

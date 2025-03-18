@@ -159,27 +159,31 @@ def generate_cover_pdf(form_id, property_name):
     c.setFillColorRGB(1, 1, 1)  # White background
     c.rect(0, 0, width, height, fill=1, stroke=0)
     
-    # Darker Red Color for Highlight
-    dark_red_color = (0.9, 0, 0)  # Darker red RGB
+    # Dark Red Color for Heading
+    dark_red_color = (0.9, 0, 0)  # Dark red RGB
     
-    # Slimmer Highlighted Area for Property Name
-    highlight_height = 0.5 * inch  # Reduced height for a slimmer highlighted area
+    # Calculate maximum width for text (accounting for margins)
     header_margin = 50  # Margin from the sides
+    max_text_width = width - 2 * header_margin - 20  # 20 pixels padding on each side
     
-    # Calculate the y-position of the highlighted area
-    highlight_y_position = height - 1.8 * inch - highlight_height  # Adjusted y-position
+    # Create a temporary font object for measuring text
+    temp_font = ImageFont.truetype("/Library/Fonts/Arial Unicode.ttf", size=24)
     
-    # Draw the highlighted rectangle
-    c.setFillColorRGB(*dark_red_color)  # Use darker red color
-    c.rect(header_margin, highlight_y_position, width - 2 * header_margin, highlight_height, fill=1, stroke=0)
+    # Wrap the property name if it's too long
+    wrapped_lines = wrap_text(property_name, temp_font, max_text_width)
     
-    # Property Name Header Text (white)
-    c.setFillColorRGB(1, 1, 1)  # White color for text
+    # Calculate line height and starting position
+    line_height = 30  # Approximate height per line
+    text_start_y = height - 1.8 * inch  # Starting position from top
+    
+    # Set font and color for the heading
+    c.setFillColorRGB(*dark_red_color)  # Red color for text
     c.setFont("Helvetica-Bold", 24)  # Larger font size
     
-    # Adjust the vertical position of the text to center it within the highlighted area
-    text_y_position = highlight_y_position + (highlight_height / 2) - 8  # Adjusted for vertical centering
-    c.drawCentredString(width / 2, text_y_position, property_name)
+    # Draw each line of text
+    for i, line in enumerate(wrapped_lines):
+        text_y_position = text_start_y - (i * line_height)
+        c.drawCentredString(width / 2, text_y_position, line)
     
     # Try to find and add cover image
     cover_image_folder = os.path.join("uploads", form_id, "cover_image")

@@ -678,6 +678,9 @@ def edit_form(form_id):
 
     # Handle form submission
     if request.method == 'POST':
+        # Update property name
+        form.property_name = request.form.get('property_name', '')
+
         # Create upload directories if they don't exist
         os.makedirs(upload_folder, exist_ok=True)
         os.makedirs(cover_image_folder, exist_ok=True)
@@ -769,6 +772,7 @@ def edit_form(form_id):
     return render_template(
         'edit_form.html',
         form_id=form_id,
+        form=form,  # Add the form object to the context
         primary_questions=primary_questions,
         primary_answers=primary_answers,
         questions=additional_questions,
@@ -777,6 +781,76 @@ def edit_form(form_id):
         existing_cover_image=existing_cover_image
     )
 
+@app.route('/form/<form_id>/duplicate')
+@login_required
+def duplicate_form(form_id):
+    try:
+        # Get the original form
+        original_form = Form.query.filter_by(form_id=form_id).first()
+        if not original_form:
+            flash('Original form not found', 'error')
+            return redirect(url_for('index'))
+
+        # Check if we've reached the maximum number of forms
+        forms_count = Form.query.count()
+        if forms_count >= 10:
+            flash("You have reached the maximum of 10 forms. Please delete an existing form before creating a new one.", "error")
+            return redirect(url_for('index'))
+
+        # Generate new form ID
+        last_form = Form.query.order_by(Form.id.desc()).first()
+        new_form_id = str(int(last_form.form_id) + 1)
+
+        # Create new form
+        new_form = Form(
+            form_id=new_form_id,
+            form_type=original_form.form_type,
+            property_name=f"{original_form.property_name} (Copy)" if original_form.property_name else None
+        )
+        db.session.add(new_form)
+
+        # Copy PrimaryAnswers
+        primary_answers = PrimaryAnswer.query.filter_by(form_id=form_id).all()
+        for pa in primary_answers:
+            new_pa = PrimaryAnswer(
+                form_id=new_form_id,
+                question_id=pa.question_id,
+                question=pa.question,
+                answer=pa.answer
+            )
+            db.session.add(new_pa)
+
+        # Copy Answers
+        answers = Answer.query.filter_by(form_id=form_id).all()
+        for ans in answers:
+            new_ans = Answer(
+                form_id=new_form_id,
+                question_id=ans.question_id,
+                question=ans.question,
+                answer=ans.answer,
+                control_measures=ans.control_measures,
+                responsible_person=ans.responsible_person,
+                target_date=ans.target_date
+            )
+            db.session.add(new_ans)
+
+        # Create new empty folders for the duplicated form
+        new_upload_dir = os.path.join("uploads", new_form_id)
+        new_cover_image_dir = os.path.join(new_upload_dir, "cover_image")
+        
+        # Create the directories
+        os.makedirs(new_upload_dir, exist_ok=True)
+        os.makedirs(new_cover_image_dir, exist_ok=True)
+
+        # Commit all changes
+        db.session.commit()
+        flash('Form duplicated successfully', 'success')
+        return redirect(url_for('index'))
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error duplicating form: {str(e)}', 'error')
+        return redirect(url_for('index'))
 
 if __name__ == '__main__':
     with app.app_context():

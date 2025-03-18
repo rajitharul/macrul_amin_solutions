@@ -1,103 +1,98 @@
-
 PRIMARY_HOUSING_QUESTIONS = [
-    {"id": "0.00", "question": "General Information"},
-    {"id": "0.01", "question": "Responsible person (e.g. employer) or person having control of premises?"},
-    {"id": "0.02", "question": "Address of premises?"},
-    {"id": "0.03", "question": "Person(s) consulted?"},
-    {"id": "0.04", "question": "Assessor?"},
-    {"id": "0.05", "question": "Assessors statement?"},
-    {"id": "0.06", "question": "Report validated by?"},
-    {"id": "0.07", "question": "Date of fire risk assessment?"},
-    {"id": "0.08", "question": "Date of previous fire risk assessment?"},
-    {"id": "0.09", "question": "Suggested date for review?"},
-    {"id": "1.00", "question": "THE PREMISES (Clause 12)"},
-    {"id": "1.01", "question": "Number of floors at ground level and above"},
-    {"id": "1.02", "question": "Number of floors entirely below ground level"},
-    {"id": "1.03", "question": "Floors on which car parking is provided"},
-    {"id": "1.05", "question": "Approximate gross floor area"},
-    {"id": "1.06", "question": "Brief details of construction and approximate age of building"},
-    {"id": "1.07", "question": "Occupancy"},
-    {"id": "2.00", "question": "THE OCCUPANTS (Clause 12)"},
-    {"id": "2.01", "question": "Approximate maximum number of employees at any one time"},
-    {"id": "2.02", "question": "Approximate maximum number of residents and visitors at any one time"},
-    {"id": "3.00", "question": "OCCUPANTS ESPECIALLY AT RISK FROM FIRE (Clause 12)"},
-    {"id": "3.01", "question": "Sleeping occupants"},
-    {"id": "3.02", "question": "Disabled occupants (if known)"},
-    {"id": "3.03", "question": "Others"},
-    {"id": "3.04", "question": "Occupants in remote areas and lone workers"},
-    {"id": "3.06", "question": "Others"},
-    {"id": "4.00", "question": "FIRE LOSS EXPERIENCE"},
-    {"id": "4.01", "question": "Fires in the past"},
-    {"id": "4.02", "question": "Cost of past fire losses"},
-    {"id": "5.00", "question": "OTHER RELEVANT INFORMATION"},
-    {"id": "5.01", "question": "Detail here if required"},
-    {"id": "6.00", "question": "RELEVANT FIRE SAFETY LEGISLATION"},
-    {"id": "6.01", "question": "The following fire safety legislation applies to these premises"},
-    {"id": "6.02", "question": "The above legislation is enforced by"},
-    {"id": "6.03", "question": "Other legislation that makes significant requirements for fire precautions in these premises"},
-    {"id": "6.04", "question": "The other legislation referred to above is enforced by"},
-    {"id": "6.05", "question": "Is there an alterations notice in force?"},
-    {"id": "6.06", "question": "Relevant information and deficiencies observed"},
-    {"id": "6.07", "question": "Other information if required"},
-    {"id": "6.08", "question": "Risk Likelyhood?"},
-    {"id": "6.09", "question": "Risk Severity?"},
-    {"id": "6.10", "question": "Risk Rating Score?"},
+    {"id": "0.00", "question": "General Information", "default_value": "sample default"},
+    {"id": "0.01", "question": "Responsible person (e.g. employer) or person having control of premises?", "default_value": "sample default"},
+    {"id": "0.02", "question": "Address of premises?", "default_value": "sample default"},
+    {"id": "0.03", "question": "Person(s) consulted?", "default_value": "sample default"},
+    {"id": "0.04", "question": "Assessor?", "default_value": "sample default"},
+    {"id": "0.05", "question": "Assessors statement?", "default_value": "sample default"},
+    {"id": "0.06", "question": "Report validated by?", "default_value": "sample default"},
+    {"id": "0.07", "question": "Date of fire risk assessment?", "default_value": "sample default"},
+    {"id": "0.08", "question": "Date of previous fire risk assessment?", "default_value": "sample default"},
+    {"id": "0.09", "question": "Suggested date for review?", "default_value": "sample default"},
+    {"id": "1.00", "question": "THE PREMISES (Clause 12)", "default_value": "sample default"},
+    {"id": "1.01", "question": "Number of floors at ground level and above", "default_value": "sample default"},
+    {"id": "1.02", "question": "Number of floors entirely below ground level", "default_value": "sample default"},
+    {"id": "1.03", "question": "Floors on which car parking is provided", "default_value": "sample default"},
+    {"id": "1.05", "question": "Approximate gross floor area", "default_value": "sample default"},
+    {"id": "1.06", "question": "Brief details of construction and approximate age of building", "default_value": "sample default"},
+    {"id": "1.07", "question": "Occupancy", "default_value": "sample default"},
+    {"id": "2.00", "question": "THE OCCUPANTS (Clause 12)", "default_value": "sample default"},
+    {"id": "2.01", "question": "Approximate maximum number of employees at any one time", "default_value": "sample default"},
+    {"id": "2.02", "question": "Approximate maximum number of residents and visitors at any one time", "default_value": "sample default"},
+    {"id": "3.00", "question": "OCCUPANTS ESPECIALLY AT RISK FROM FIRE (Clause 12)", "default_value": "sample default"},
+    {"id": "3.01", "question": "Sleeping occupants", "default_value": "sample default"},
+    {"id": "3.02", "question": "Disabled occupants (if known)", "default_value": "sample default"},
+    {"id": "3.03", "question": "Others", "default_value": "sample default"},
+    {"id": "3.04", "question": "Occupants in remote areas and lone workers", "default_value": "sample default"},
+    {"id": "3.06", "question": "Others", "default_value": "sample default"},
+    {"id": "4.00", "question": "FIRE LOSS EXPERIENCE", "default_value": "sample default"},
+    {"id": "4.01", "question": "Fires in the past", "default_value": "sample default"},
+    {"id": "4.02", "question": "Cost of past fire losses", "default_value": "sample default"},
+    {"id": "5.00", "question": "OTHER RELEVANT INFORMATION", "default_value": "sample default"},
+    {"id": "5.01", "question": "Detail here if required", "default_value": "sample default"},
+    {"id": "6.00", "question": "RELEVANT FIRE SAFETY LEGISLATION", "default_value": "sample default"},
+    {"id": "6.01", "question": "The following fire safety legislation applies to these premises", "default_value": "sample default"},
+    {"id": "6.02", "question": "The above legislation is enforced by", "default_value": "sample default"},
+    {"id": "6.03", "question": "Other legislation that makes significant requirements for fire precautions in these premises", "default_value": "sample default"},
+    {"id": "6.04", "question": "The other legislation referred to above is enforced by", "default_value": "sample default"},
+    {"id": "6.05", "question": "Is there an alterations notice in force?", "default_value": "sample default"},
+    {"id": "6.06", "question": "Relevant information and deficiencies observed", "default_value": "sample default"},
+    {"id": "6.07", "question": "Other information if required", "default_value": "sample default"},
+    {"id": "6.08", "question": "Risk Likelyhood?", "default_value": "sample default"},
+    {"id": "6.09", "question": "Risk Severity?", "default_value": "sample default"},
+    {"id": "6.10", "question": "Risk Rating Score?", "default_value": "sample default"},
 ]
-
-
 
 PRIMARY_QUESTIONS = [
-    {"id": "0.00", "question": "General Information"},
-    {"id": "0.01", "question": "Responsible person (e.g. employer) or person having control of premises?"},
-    {"id": "0.02", "question": "Address of premises?"},
-    {"id": "0.03", "question": "Person(s) consulted?"},
-    {"id": "0.04", "question": "Assessor?"},
-    {"id": "0.05", "question": "Assessors statement?"},
-    {"id": "0.06", "question": "Report validated by?"},
-    {"id": "0.07", "question": "Date of fire risk assessment?"},
-    {"id": "0.08", "question": "Date of previous fire risk assessment?"},
-    {"id": "0.09", "question": "Suggested date for review?"},
-    {"id": "0.10", "question": "Fire Risk Assessment Review?"},
-    {"id": "0.11", "question": "Report compliance?"},
-    {"id": "1.00", "question": "THE PREMISES (Clause 12)"},
-    {"id": "1.01", "question": "Number of floors at ground level and above?"},
-    {"id": "1.02", "question": "Number of floors entirely below ground level?"},
-    {"id": "1.03", "question": "Floors on which car parking is provided?"},
-    {"id": "1.04", "question": "Approximate floor area per floor?"},
-    {"id": "1.05", "question": "Approximate floor area gross?"},
-    {"id": "1.06", "question": "Approximate floor area on ground floor?"},
-    {"id": "1.07", "question": "Details of construction and layout?"},
-    {"id": "1.08", "question": "Occupancy?"},
-    {"id": "2.00", "question": "THE OCCUPANTS (Clause 12)"},
-    {"id": "2.01", "question": "Approximate maximum number of employees at any one time?"},
-    {"id": "2.02", "question": "Approximate maximum number of other occupants at any one time?"},
-    {"id": "2.03", "question": "Approximate total number of people present in the building at any one time?"},
-    {"id": "3.00", "question": "OCCUPANTS ESPECIALLY AT RISK FROM FIRE (Clause 12)"},
-    {"id": "3.01", "question": "Sleeping occupants?"},
-    {"id": "3.02", "question": "Disabled employees?"},
-    {"id": "3.03", "question": "Other disabled occupants?"},
-    {"id": "3.04", "question": "Occupants in remote areas and lone workers?"},
-    {"id": "3.05", "question": "Young persons?"},
-    {"id": "3.06", "question": "Others?"},
-    {"id": "4.00", "question": "FIRE LOSS EXPERIENCE"},
-    {"id": "4.01", "question": "Fires in past 10 years?"},
-    {"id": "4.02", "question": "Cost of past fire losses?"},
-    {"id": "5.00", "question": "OTHER RELEVANT INFORMATION"},
-    {"id": "5.01", "question": "Detail if required?"},
-    {"id": "6.00", "question": "RELEVANT FIRE SAFETY LEGISLATION"},
-    {"id": "6.01", "question": "The following fire safety legislation applies to these premises?"},
-    {"id": "6.02", "question": "The above legislation is enforced by?"},
-    {"id": "6.03", "question": "Other legislation that makes significant requirements for fire precautions in these premises?"},
-    {"id": "6.04", "question": "The other legislation referred to above is enforced by?"},
-    {"id": "6.05", "question": "Is there an alterations notice in force?"},
-    {"id": "6.06", "question": "Relevant information and deficiencies observed?"},
-    {"id": "6.07", "question": "Other information?"},
-    {"id": "6.08", "question": "Risk Likelyhood?"},
-    {"id": "6.09", "question": "Risk Severity?"},
-    {"id": "6.10", "question": "Risk Rating Score?"},
-
+    {"id": "0.00", "question": "General Information", "default_value": "sample default"},
+    {"id": "0.01", "question": "Responsible person (e.g. employer) or person having control of premises?", "default_value": "sample default"},
+    {"id": "0.02", "question": "Address of premises?", "default_value": "sample default"},
+    {"id": "0.03", "question": "Person(s) consulted?", "default_value": "sample default"},
+    {"id": "0.04", "question": "Assessor?", "default_value": "sample default"},
+    {"id": "0.05", "question": "Assessors statement?", "default_value": "sample default"},
+    {"id": "0.06", "question": "Report validated by?", "default_value": "sample default"},
+    {"id": "0.07", "question": "Date of fire risk assessment?", "default_value": "sample default"},
+    {"id": "0.08", "question": "Date of previous fire risk assessment?", "default_value": "sample default"},
+    {"id": "0.09", "question": "Suggested date for review?", "default_value": "sample default"},
+    {"id": "0.10", "question": "Fire Risk Assessment Review?", "default_value": "sample default"},
+    {"id": "0.11", "question": "Report compliance?", "default_value": "sample default"},
+    {"id": "1.00", "question": "THE PREMISES (Clause 12)", "default_value": "sample default"},
+    {"id": "1.01", "question": "Number of floors at ground level and above?", "default_value": "sample default"},
+    {"id": "1.02", "question": "Number of floors entirely below ground level?", "default_value": "sample default"},
+    {"id": "1.03", "question": "Floors on which car parking is provided?", "default_value": "sample default"},
+    {"id": "1.04", "question": "Approximate floor area per floor?", "default_value": "sample default"},
+    {"id": "1.05", "question": "Approximate floor area gross?", "default_value": "sample default"},
+    {"id": "1.06", "question": "Approximate floor area on ground floor?", "default_value": "sample default"},
+    {"id": "1.07", "question": "Details of construction and layout?", "default_value": "sample default"},
+    {"id": "1.08", "question": "Occupancy?", "default_value": "sample default"},
+    {"id": "2.00", "question": "THE OCCUPANTS (Clause 12)", "default_value": "sample default"},
+    {"id": "2.01", "question": "Approximate maximum number of employees at any one time?", "default_value": "sample default"},
+    {"id": "2.02", "question": "Approximate maximum number of other occupants at any one time?", "default_value": "sample default"},
+    {"id": "2.03", "question": "Approximate total number of people present in the building at any one time?", "default_value": "sample default"},
+    {"id": "3.00", "question": "OCCUPANTS ESPECIALLY AT RISK FROM FIRE (Clause 12)", "default_value": "sample default"},
+    {"id": "3.01", "question": "Sleeping occupants?", "default_value": "sample default"},
+    {"id": "3.02", "question": "Disabled employees?", "default_value": "sample default"},
+    {"id": "3.03", "question": "Other disabled occupants?", "default_value": "sample default"},
+    {"id": "3.04", "question": "Occupants in remote areas and lone workers?", "default_value": "sample default"},
+    {"id": "3.05", "question": "Young persons?", "default_value": "sample default"},
+    {"id": "3.06", "question": "Others?", "default_value": "sample default"},
+    {"id": "4.00", "question": "FIRE LOSS EXPERIENCE", "default_value": "sample default"},
+    {"id": "4.01", "question": "Fires in past 10 years?", "default_value": "sample default"},
+    {"id": "4.02", "question": "Cost of past fire losses?", "default_value": "sample default"},
+    {"id": "5.00", "question": "OTHER RELEVANT INFORMATION", "default_value": "sample default"},
+    {"id": "5.01", "question": "Detail if required?", "default_value": "sample default"},
+    {"id": "6.00", "question": "RELEVANT FIRE SAFETY LEGISLATION", "default_value": "sample default"},
+    {"id": "6.01", "question": "The following fire safety legislation applies to these premises?", "default_value": "sample default"},
+    {"id": "6.02", "question": "The above legislation is enforced by?", "default_value": "sample default"},
+    {"id": "6.03", "question": "Other legislation that makes significant requirements for fire precautions in these premises?", "default_value": "sample default"},
+    {"id": "6.04", "question": "The other legislation referred to above is enforced by?", "default_value": "sample default"},
+    {"id": "6.05", "question": "Is there an alterations notice in force?", "default_value": "sample default"},
+    {"id": "6.06", "question": "Relevant information and deficiencies observed?", "default_value": "sample default"},
+    {"id": "6.07", "question": "Other information?", "default_value": "sample default"},
+    {"id": "6.08", "question": "Risk Likelyhood?", "default_value": "sample default"},
+    {"id": "6.09", "question": "Risk Severity?", "default_value": "sample default"},
+    {"id": "6.10", "question": "Risk Rating Score?", "default_value": "sample default"},
 ]
-
 
 QUESTIONS = [
   {
@@ -138,7 +133,7 @@ QUESTIONS = [
   {
     "id": "7.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "8.00",
@@ -178,7 +173,7 @@ QUESTIONS = [
   {
     "id": "8.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "9.00",
@@ -198,7 +193,7 @@ QUESTIONS = [
   {
     "id": "9.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "10.00",
@@ -218,7 +213,7 @@ QUESTIONS = [
   {
     "id": "10.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "11.00",
@@ -238,7 +233,7 @@ QUESTIONS = [
   {
     "id": "11.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "12.00",
@@ -253,7 +248,7 @@ QUESTIONS = [
   {
     "id": "12.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "13.00",
@@ -283,7 +278,7 @@ QUESTIONS = [
   {
     "id": "13.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "14.00",
@@ -318,7 +313,7 @@ QUESTIONS = [
   {
     "id": "14.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "15.00",
@@ -333,7 +328,7 @@ QUESTIONS = [
   {
     "id": "15.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "16.00",
@@ -348,7 +343,7 @@ QUESTIONS = [
   {
     "id": "16.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "17.00",
@@ -448,7 +443,7 @@ QUESTIONS = [
   {
     "id": "17.05",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "18.00",
@@ -478,7 +473,7 @@ QUESTIONS = [
   {
     "id": "18.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "19.00",
@@ -493,7 +488,7 @@ QUESTIONS = [
   {
     "id": "19.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "20.00",
@@ -508,7 +503,7 @@ QUESTIONS = [
   {
     "id": "20.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "21.00",
@@ -538,7 +533,7 @@ QUESTIONS = [
   {
     "id": "21.05",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "22.00",
@@ -578,7 +573,7 @@ QUESTIONS = [
   {
     "id": "22.04",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "23.00",
@@ -613,7 +608,7 @@ QUESTIONS = [
   {
     "id": "23.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "24.00",
@@ -638,7 +633,7 @@ QUESTIONS = [
   {
     "id": "24.04",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "25.00",
@@ -723,7 +718,7 @@ QUESTIONS = [
   {
     "id": "25.10",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "26.00",
@@ -768,7 +763,7 @@ QUESTIONS = [
   {
     "id": "26.04",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "27.00",
@@ -833,7 +828,7 @@ QUESTIONS = [
   {
     "id": "27.12",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "28.00",
@@ -883,7 +878,7 @@ QUESTIONS = [
   {
     "id": "28.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
   {
     "id": "29.09",
@@ -896,8 +891,6 @@ QUESTIONS = [
     "control_measures": "Ensure that Personal Emergency Evacuation Plans are compiled in accordance with Home Office guidance and are readily available for enforcing authority inspection."
   }
 ]
-
-
 
 HOUSING_QUESTIONS = [
   {
@@ -928,7 +921,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "7.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -969,7 +962,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "8.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -990,7 +983,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "9.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1011,7 +1004,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "10.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1027,7 +1020,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "11.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1043,7 +1036,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "12.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1079,7 +1072,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "13.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1095,7 +1088,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "14.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1111,7 +1104,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "15.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1127,7 +1120,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "16.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1228,7 +1221,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "17.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1269,7 +1262,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "18.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1285,7 +1278,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "19.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1301,7 +1294,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "20.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1332,7 +1325,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "21.05",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1353,7 +1346,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "22.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1379,7 +1372,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "23.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1400,7 +1393,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "24.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1441,7 +1434,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "25.07",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1462,7 +1455,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "26.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1508,7 +1501,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "27.08",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1539,7 +1532,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "28.02",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1570,7 +1563,7 @@ HOUSING_QUESTIONS = [
   {
     "id": "29.11",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   },
 
   {
@@ -1591,6 +1584,6 @@ HOUSING_QUESTIONS = [
   {
     "id": "30.03",
     "question": "Observations",
-    "control_measures": "N/A"
+    "control_measures": "-"
   }
 ]

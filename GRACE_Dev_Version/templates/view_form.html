@@ -249,9 +249,18 @@
 
         <!-- Download Button -->
         <div class="button-container">
-            <a href="{{ url_for('download_form', form_id=form_id) }}">
-                <button>Download PDF File</button>
-            </a>
+            {% if cover_image %}
+                <a href="{{ url_for('download_form', form_id=form_id) }}">
+                    <button>Download PDF File</button>
+                </a>
+            {% else %}
+                <div style="color: #ff0000; margin-bottom: 10px;">
+                    Warning: Cover image is missing. Please upload a cover image before downloading the PDF.
+                </div>
+                <a href="{{ url_for('edit_form', form_id=form_id) }}">
+                    <button style="background-color: #ff6b6b;">Upload Cover Image</button>
+                </a>
+            {% endif %}
         </div>
     </div>
 </body>

@@ -120,9 +120,16 @@
             <div>
                 {% if question['id'].endswith('.00') %}
                     <h3 style="background-color: #ffdddd; color: rgb(0, 0, 0); padding: 10px; border-radius: 5px;">{{ question['id'] }}: {{ question['question'] }}</h3>
+                    <textarea style="display: none;" class="primary-question-textarea" name="primary-answer-{{ question['id'] }}" required>-</textarea>
+                {% else %}
+                    <label>{{ question['id'] }}: {{ question['question'] }}</label>
+                    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                        <input type="checkbox" class="default-value-checkbox" data-question-id="{{ question['id'] }}" style="margin-right: 5px;">
+                        <span style="font-size: 14px; color: #666;">Use default value</span>
+                    </div>
+                    <textarea class="primary-question-textarea" id="textarea-{{ question['id'] }}" name="primary-answer-{{ question['id'] }}" required>-</textarea>
+                    <input type="hidden" id="default-value-{{ question['id'] }}" value="{{ question['default_value'] }}">
                 {% endif %}
-                <label>{{ question['id'] }}: {{ question['question'] }}</label>
-                <textarea class="primary-question-textarea" name="primary-answer-{{ question['id'] }}" required>-</textarea>
             </div>
             {% endfor %}
 
@@ -134,14 +141,23 @@
                     <h3 style="background-color: #ffdddd; color: rgb(0, 0, 0); padding: 10px; border-radius: 5px;">{{ question['id'] }}: {{ question['question'] }}</h3>
                 {% else %}
                     <label>{{ question['id'] }}: {{ question['question'] }}</label><br>
+                    {% if 'Observations' in question['question'] %}
+                    <input type="radio" name="answer-{{ question['id'] }}" value="Yes" checked required onclick="toggleControlMeasures('{{ question['id'] }}')"> No Observations
+                    <input type="radio" name="answer-{{ question['id'] }}" value="No" required onclick="toggleControlMeasures('{{ question['id'] }}')"> Has Observations
+                    {% else %}
                     <input type="radio" name="answer-{{ question['id'] }}" value="Yes" checked required onclick="toggleControlMeasures('{{ question['id'] }}')"> Yes
                     <input type="radio" name="answer-{{ question['id'] }}" value="No" required onclick="toggleControlMeasures('{{ question['id'] }}')"> No
                     <input type="radio" name="answer-{{ question['id'] }}" value="N/A" required onclick="toggleControlMeasures('{{ question['id'] }}')"> N/A
+                    {% endif %}
                     <br>
             
                     <!-- Control Measures, Responsible Person & Target Date (Hidden by Default) -->
                     <div id="control-section-{{ question['id'] }}" class="hidden">
+                        {% if 'Observations' in question['question'] %}
+                        <label>Enter the Observations:</label>
+                        {% else %}
                         <label>Control Measures (if "No"):</label>
+                        {% endif %}
                         <textarea id="control-measures-{{ question['id'] }}" name="control-measures-{{ question['id'] }}">{{ question['control_measures'] }}</textarea>
             
                         <label>Responsible Person:</label>
@@ -169,7 +185,7 @@
                 <input type="file" name="building_cover_image" accept="image/*" required>
             </div>
             <hr>
-
+                
             <button type="submit">Submit</button>
         </form>
     </div>
@@ -208,6 +224,27 @@
                 radio.addEventListener("change", function () {
                     let questionId = this.name.split("-")[1]; // Extract question ID from input name
                     toggleControlMeasures(questionId);
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners to all default value checkboxes
+            document.querySelectorAll('.default-value-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const questionId = this.getAttribute('data-question-id');
+                    const textarea = document.getElementById(`textarea-${questionId}`);
+                    const defaultValue = document.getElementById(`default-value-${questionId}`).value;
+                    
+                    if (this.checked) {
+                        // Save the current value before replacing it
+                        textarea.setAttribute('data-previous-value', textarea.value);
+                        textarea.value = defaultValue;
+                    } else {
+                        // Restore the previous value if it exists
+                        const previousValue = textarea.getAttribute('data-previous-value');
+                        textarea.value = previousValue || '-';
+                    }
                 });
             });
         });
