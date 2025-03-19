@@ -8,3 +8,4 @@ reportlab
 PyMuPDF
 fpdf
 gunicorn
+Flask-Migrate
