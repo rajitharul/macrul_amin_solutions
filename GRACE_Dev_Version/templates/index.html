@@ -230,6 +230,7 @@
         <div class="header-buttons">
             {% if session['username'] == 'admin' %}
             <a href="{{ url_for('register') }}" class="logout-button">Register</a>
+            <a href="{{ url_for('backup_management') }}" class="logout-button">Backup Management</a>
             {% endif %}
             <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
         </div>
@@ -253,8 +254,8 @@
     </div>
 
     <div class="form-list">
-        {% if forms|length >= 10 %}
-        <p style="color: red; text-align: center;">You have reached the maximum of 10 forms. Please delete an existing form before creating a new one.</p>
+        {% if forms|length >= 50 %}
+        <p style="color: red; text-align: center;">You have reached the maximum of 50 forms. Please clean up old forms with backup before creating a new one.</p>
         <button class="create-form" style="background-color: #ccc; cursor: not-allowed;" disabled>Create New Form</button>
     {% else %}
         <a href="{{ url_for('create_form') }}" class="create-form">Create New Form</a>

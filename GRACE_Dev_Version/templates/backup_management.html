@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-4">Backup Management</h1>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Restore Backup</h5>
+            <form action="{{ url_for('restore_backup') }}" method="post" enctype="multipart/form-data" class="mb-4">
+                <div class="mb-3">
+                    <label for="backup_file" class="form-label">Select Backup File (ZIP)</label>
+                    <input type="file" class="form-control" id="backup_file" name="backup_file" accept=".zip" required>
+                </div>
+                <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to restore this backup? This will add all forms from the backup file to your system.')">
+                    <i class="fas fa-upload"></i> Restore Backup
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Available Backups</h5>
+            {% if months %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Year</th>
+                                <th>Forms</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for month in months %}
+                                <tr>
+                                    <td>{{ month.month_name }}</td>
+                                    <td>{{ month.year }}</td>
+                                    <td>{{ month.form_count }}</td>
+                                    <td>
+                                        <form action="{{ url_for('download_backup') }}" method="post" style="display: inline;">
+                                            <input type="hidden" name="year" value="{{ month.year }}">
+                                            <input type="hidden" name="month" value="{{ month.month }}">
+                                            <button type="submit" class="btn btn-primary btn-sm" onclick="return confirm('Are you sure you want to backup and delete data for {{ month.month_name }} {{ month.year }}? This action cannot be undone.')">
+                                                Backup & Download
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-center text-muted mt-3">No previous months' data available for backup.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Important Notes</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Only previous months' data can be backed up.</li>
+                <li class="list-group-item">Current month's data cannot be backed up.</li>
+                <li class="list-group-item">Backing up will create a ZIP file containing all form data and uploaded files.</li>
+                <li class="list-group-item text-danger">After downloading the backup, all related data will be permanently deleted from the system.</li>
+                <li class="list-group-item">When restoring a backup:</li>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Only valid backup ZIP files can be restored</li>
+                    <li class="list-group-item">Forms with IDs that already exist will be skipped</li>
+                    <li class="list-group-item">All form data and uploaded files will be restored</li>
+                    <li class="list-group-item">The restore process is atomic - if any error occurs, no changes will be made</li>
+                </ul>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 1000px;
+        margin: 2rem auto;
+    }
+    .card {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary {
+        background-color: #006A67;
+        border-color: #006A67;
+    }
+    .btn-primary:hover {
+        background-color: #005652;
+        border-color: #005652;
+    }
+</style>
+{% endblock %}

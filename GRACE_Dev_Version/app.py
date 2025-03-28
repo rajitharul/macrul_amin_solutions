@@ -3,6 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, request, render_template, redirect, url_for, send_file
 import os
 import pdfkit
+import shutil
+from collections import defaultdict
+import calendar
+import zipfile
+import json
+import tempfile
 import pdfkit
 from PyPDF2 import PdfMerger
 from datetime import datetime
@@ -311,9 +317,9 @@ def delete_form(form_id):
 def create_form():
     # First, check how many forms currently exist
     forms_count = Form.query.count()
-    if forms_count >= 10:
-        flash("You have reached the maximum of 10 forms. Please delete an existing form before creating a new one.", "error")
-        return redirect(url_for('home'))  # or wherever you list all forms
+    if forms_count >= 50:
+        flash("You have reached the maximum of 50 forms. Please clean up old forms with backup before creating a new one.", "error")
+        return redirect(url_for('index'))
 
     if request.method == 'POST':
         form_id = request.form['form_id']
@@ -330,12 +336,24 @@ def create_form():
 
         return redirect(url_for('fill_form', form_id=form_id))
 
-    # If GET request, generate the next form_id
-    last_form = Form.query.order_by(Form.id.desc()).first()
+    # If GET request, generate the next form_id with date prefix
+    today = datetime.now()
+    date_prefix = today.strftime('%Y%m%d')
+    
+    # Get the last form for today
+    last_form = Form.query.filter(
+        Form.form_id.like(f'{date_prefix}%')
+    ).order_by(Form.id.desc()).first()
+    
     if last_form:
-        new_form_id = str(int(last_form.form_id) + 1)
+        # Extract the sequence number and increment it
+        seq_num = int(last_form.form_id[8:]) + 1
     else:
-        new_form_id = '1'
+        # First form of the day
+        seq_num = 1
+    
+    # Format: YYYYMMDDXXX (where XXX is the sequence number)
+    new_form_id = f'{date_prefix}{seq_num:03d}'
 
     return render_template('create_form.html', new_form_id=new_form_id)
 
@@ -793,13 +811,28 @@ def duplicate_form(form_id):
 
         # Check if we've reached the maximum number of forms
         forms_count = Form.query.count()
-        if forms_count >= 10:
-            flash("You have reached the maximum of 10 forms. Please delete an existing form before creating a new one.", "error")
+        if forms_count >= 50:
+            flash("You have reached the maximum of 50 forms. Please clean up old forms with backup before creating a new one.", "error")
             return redirect(url_for('index'))
 
-        # Generate new form ID
-        last_form = Form.query.order_by(Form.id.desc()).first()
-        new_form_id = str(int(last_form.form_id) + 1)
+        # Generate new form ID with date prefix
+        today = datetime.now()
+        date_prefix = today.strftime('%Y%m%d')
+        
+        # Get the last form for today
+        last_form = Form.query.filter(
+            Form.form_id.like(f'{date_prefix}%')
+        ).order_by(Form.id.desc()).first()
+        
+        if last_form:
+            # Extract the sequence number and increment it
+            seq_num = int(last_form.form_id[8:]) + 1
+        else:
+            # First form of the day
+            seq_num = 1
+        
+        # Format: YYYYMMDDXXX (where XXX is the sequence number)
+        new_form_id = f'{date_prefix}{seq_num:03d}'
 
         # Create new form
         new_form = Form(
@@ -851,6 +884,303 @@ def duplicate_form(form_id):
         db.session.rollback()
         flash(f'Error duplicating form: {str(e)}', 'error')
         return redirect(url_for('index'))
+
+@app.route('/backup-management')
+@login_required
+def backup_management():
+    # Get all valid forms (with proper form_id format)
+    forms = Form.query.filter(
+        Form.form_id.isnot(None),
+        Form.form_id != '',
+        db.func.length(Form.form_id) >= 8
+    ).all()
+    
+    # Group forms by month
+    months_data = defaultdict(list)
+    current_date = datetime.now()
+    current_month = (current_date.year, current_date.month)
+    
+    for form in forms:
+        try:
+            # Extract year and month from form_id (format: YYYYMMDDXXX)
+            year = int(form.form_id[:4])
+            month = int(form.form_id[4:6])
+            
+            # Basic validation of year and month
+            if not (2000 <= year <= 2100 and 1 <= month <= 12):
+                continue
+                
+            # Skip current month
+            if (year, month) != current_month:
+                months_data[(year, month)].append(form)
+        except (ValueError, IndexError):
+            # Skip forms with invalid date format
+            continue
+    
+    # Convert to list and sort by date (newest first)
+    months_list = [{
+        'year': year,
+        'month': month,
+        'month_name': calendar.month_name[month],
+        'form_count': len(forms)
+    } for (year, month), forms in months_data.items()]
+    months_list.sort(key=lambda x: (x['year'], x['month']), reverse=True)
+    
+    return render_template('backup_management.html', months=months_list)
+
+@app.route('/backup/download', methods=['POST'])
+@login_required
+def download_backup():
+    try:
+        year = int(request.form['year'])
+        month = int(request.form['month'])
+        
+        # Validate that this is not the current month
+        current_date = datetime.now()
+        if year == current_date.year and month == current_date.month:
+            flash('Cannot backup current month\'s data', 'error')
+            return redirect(url_for('backup_management'))
+        
+        # Create a temporary directory for the backup
+        backup_dir = f'temp_backup_{year}{month:02d}'
+        os.makedirs(backup_dir, exist_ok=True)
+        
+        try:
+            # Get all forms for the specified month with valid form_ids
+            month_prefix = f'{year}{month:02d}'
+            forms = Form.query.filter(
+                Form.form_id.isnot(None),
+                Form.form_id != '',
+                db.func.length(Form.form_id) >= 8,
+                Form.form_id.like(f'{month_prefix}%'),
+                # Additional validation to ensure form_id starts with a valid date
+                db.func.substr(Form.form_id, 1, 4).cast(db.Integer).between(2000, 2100),
+                db.func.substr(Form.form_id, 5, 2).cast(db.Integer).between(1, 12)
+            ).all()
+            
+            if not forms:
+                flash('No data found for the selected month', 'error')
+                return redirect(url_for('backup_management'))
+            
+            # Create database backup directory
+            db_backup_dir = os.path.join(backup_dir, 'database')
+            os.makedirs(db_backup_dir, exist_ok=True)
+            
+            # Export database records
+            for form in forms:
+                form_data = {
+                    'form_id': form.form_id,
+                    'form_type': form.form_type,
+                    'property_name': form.property_name,
+                    'date_created': form.date_created.isoformat(),
+                    'primary_answers': [],
+                    'answers': []
+                }
+                
+                # Get related primary answers
+                primary_answers = PrimaryAnswer.query.filter_by(form_id=form.form_id).all()
+                for pa in primary_answers:
+                    form_data['primary_answers'].append({
+                        'question_id': pa.question_id,
+                        'question': pa.question,
+                        'answer': pa.answer
+                    })
+                
+                # Get related answers
+                answers = Answer.query.filter_by(form_id=form.form_id).all()
+                for answer in answers:
+                    form_data['answers'].append({
+                        'question_id': answer.question_id,
+                        'question': answer.question,
+                        'answer': answer.answer,
+                        'control_measures': answer.control_measures,
+                        'responsible_person': answer.responsible_person,
+                        'target_date': answer.target_date.isoformat() if answer.target_date else None
+                    })
+                
+                # Save form data as JSON
+                with open(os.path.join(db_backup_dir, f'{form.form_id}.json'), 'w') as f:
+                    json.dump(form_data, f, indent=2)
+                
+                # Copy uploaded files
+                form_uploads_dir = os.path.join('uploads', form.form_id)
+                if os.path.exists(form_uploads_dir):
+                    backup_uploads_dir = os.path.join(backup_dir, 'uploads', form.form_id)
+                    shutil.copytree(form_uploads_dir, backup_uploads_dir)
+            
+            # Create temporary ZIP file
+            import tempfile
+            temp_zip = tempfile.NamedTemporaryFile(suffix='.zip', delete=False)
+            zip_filename = f'backup_{year}{month:02d}.zip'
+            
+            try:
+                # Create ZIP file in memory
+                with zipfile.ZipFile(temp_zip.name, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                    for root, _, files in os.walk(backup_dir):
+                        for file in files:
+                            file_path = os.path.join(root, file)
+                            arcname = os.path.relpath(file_path, backup_dir)
+                            zipf.write(file_path, arcname)
+                
+                # Clean up original data after successful backup
+                for form in forms:
+                    # Delete uploaded files
+                    form_uploads_dir = os.path.join('uploads', form.form_id)
+                    if os.path.exists(form_uploads_dir):
+                        shutil.rmtree(form_uploads_dir)
+                    
+                    # Delete database records
+                    PrimaryAnswer.query.filter_by(form_id=form.form_id).delete()
+                    Answer.query.filter_by(form_id=form.form_id).delete()
+                    db.session.delete(form)
+                
+                db.session.commit()
+                
+                # Clean up temporary directory
+                shutil.rmtree(backup_dir)
+                
+                # Send the ZIP file and delete it after sending
+                response = send_file(
+                    temp_zip.name,
+                    as_attachment=True,
+                    download_name=zip_filename
+                )
+                response.call_on_close(lambda: os.unlink(temp_zip.name))
+                return response
+                
+            except Exception as e:
+                # Clean up temp file in case of error
+                os.unlink(temp_zip.name)
+                raise e
+            
+        except Exception as e:
+            if os.path.exists(backup_dir):
+                shutil.rmtree(backup_dir)
+            raise e
+            
+    except Exception as e:
+        flash(f'Error creating backup: {str(e)}', 'error')
+        return redirect(url_for('backup_management'))
+
+@app.route('/backup/restore', methods=['POST'])
+@login_required
+def restore_backup():
+    if 'backup_file' not in request.files:
+        flash('No backup file provided', 'error')
+        return redirect(url_for('backup_management'))
+    
+    backup_file = request.files['backup_file']
+    if backup_file.filename == '':
+        flash('No backup file selected', 'error')
+        return redirect(url_for('backup_management'))
+    
+    if not backup_file.filename.endswith('.zip'):
+        flash('Invalid file format. Please upload a ZIP file', 'error')
+        return redirect(url_for('backup_management'))
+    
+    try:
+        # Create a temporary directory for restoration
+        restore_dir = tempfile.mkdtemp(prefix='restore_')
+        
+        try:
+            # Save and extract the ZIP file
+            zip_path = os.path.join(restore_dir, 'backup.zip')
+            backup_file.save(zip_path)
+            
+            with zipfile.ZipFile(zip_path, 'r') as zipf:
+                # Verify ZIP file structure
+                file_list = zipf.namelist()
+                if not any(name.startswith('database/') for name in file_list):
+                    raise ValueError('Invalid backup file structure: missing database directory')
+                
+                # Extract files
+                zipf.extractall(restore_dir)
+            
+            # Process database records
+            db_dir = os.path.join(restore_dir, 'database')
+            restored_forms = []
+            
+            for json_file in os.listdir(db_dir):
+                if not json_file.endswith('.json'):
+                    continue
+                    
+                with open(os.path.join(db_dir, json_file)) as f:
+                    form_data = json.load(f)
+                
+                # Verify form ID format
+                form_id = form_data['form_id']
+                if not (len(form_id) >= 8 and form_id[:8].isdigit()):
+                    raise ValueError(f'Invalid form ID format: {form_id}')
+                
+                # Check if form already exists
+                if Form.query.filter_by(form_id=form_id).first():
+                    raise ValueError(f'Form {form_id} already exists in the database')
+                
+                # Create new form
+                new_form = Form(
+                    form_id=form_id,
+                    form_type=form_data['form_type'],
+                    property_name=form_data['property_name'],
+                    date_created=datetime.fromisoformat(form_data['date_created'])
+                )
+                db.session.add(new_form)
+                restored_forms.append(form_id)
+                
+                # Restore primary answers
+                for pa_data in form_data['primary_answers']:
+                    pa = PrimaryAnswer(
+                        form_id=form_id,
+                        question_id=pa_data['question_id'],
+                        question=pa_data['question'],
+                        answer=pa_data['answer']
+                    )
+                    db.session.add(pa)
+                
+                # Restore answers
+                for answer_data in form_data['answers']:
+                    answer = Answer(
+                        form_id=form_id,
+                        question_id=answer_data['question_id'],
+                        question=answer_data['question'],
+                        answer=answer_data['answer'],
+                        control_measures=answer_data['control_measures'],
+                        responsible_person=answer_data['responsible_person'],
+                        target_date=datetime.fromisoformat(answer_data['target_date']) if answer_data['target_date'] else None
+                    )
+                    db.session.add(answer)
+            
+            # Restore uploaded files and create empty folders if needed
+            uploads_dir = os.path.join(restore_dir, 'uploads')
+            for form_id in restored_forms:
+                dst_dir = os.path.join('uploads', form_id)
+                
+                # If the form has files in the backup, restore them
+                src_dir = os.path.join(uploads_dir, form_id) if os.path.exists(uploads_dir) else None
+                if src_dir and os.path.exists(src_dir):
+                    if os.path.exists(dst_dir):
+                        shutil.rmtree(dst_dir)
+                    shutil.copytree(src_dir, dst_dir)
+                else:
+                    # Create empty upload folder if it doesn't exist
+                    if not os.path.exists(dst_dir):
+                        os.makedirs(dst_dir)
+                        print(f'Created empty uploads folder for form {form_id}')
+            
+            # Commit all changes
+            db.session.commit()
+            
+            flash(f'Successfully restored {len(restored_forms)} forms from backup', 'success')
+            
+        finally:
+            # Clean up temporary directory
+            if os.path.exists(restore_dir):
+                shutil.rmtree(restore_dir)
+    
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error restoring backup: {str(e)}', 'error')
+    
+    return redirect(url_for('backup_management'))
 
 if __name__ == '__main__':
     with app.app_context():
