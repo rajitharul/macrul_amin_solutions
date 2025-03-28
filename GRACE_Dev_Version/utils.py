@@ -287,7 +287,7 @@ def generate_second_page_with_info(address, assessment_date, next_assessment_dat
         font_path = "C:\\Windows\\Fonts\\arial.ttf"  # Provide your custom font
 
     # Load the font with a larger size
-    font = ImageFont.truetype(font_path, size=30)  # Adjust font size as needed
+    font = ImageFont.truetype(font_path, size=50)  # Increased font size to 50
 
     # Define max width for the text (width before splitting)
     max_width = 500  # This is just an example, adjust based on your image's layout
@@ -295,14 +295,15 @@ def generate_second_page_with_info(address, assessment_date, next_assessment_dat
     # Wrap address if it's too long
     address_lines = wrap_text(address, font, max_width)
 
-    # List of texts and their corresponding positions
+    # List of texts and their corresponding positions (shifted right by 25, down by 200)
     texts = [
-        (address_lines[0], (180, 545)),  # First line of address
-        (address_lines[1] if len(address_lines) > 1 else '', (180, 585)),  # Second line of address, if it exists
-        (assessment_date, (180, 673)),
-        (next_assessment_date, (180, 785)),
-        (assessor, (180, 910)),
-        (responsible_person, (180, 1120)),
+        (address_lines[0], (270, 820)),      # First line of address (250+25, 615+200)
+        (address_lines[1] if len(address_lines) > 1 else '', (270, 880)),  # Second line (250+25, 655+200)
+        (address_lines[2] if len(address_lines) > 2 else '', (270, 940)),  # Third line (250+25, 695+200)
+        (assessment_date, (270, 1100)),       # Assessment date (250+25, 830+200)
+        (next_assessment_date, (270, 1260)),  # Next assessment (250+25, 940+200)
+        (assessor, (270, 1440)),             # Assessor (250+25, 1050+200)
+        (responsible_person, (270, 1760)),    # Responsible person (250+25, 1250+200)
     ]
 
     # Set text color to black
@@ -329,6 +330,5 @@ def generate_second_page_with_info(address, assessment_date, next_assessment_dat
     print(f"Image saved at {output_path}")
 
     return output_path
-
 
 
