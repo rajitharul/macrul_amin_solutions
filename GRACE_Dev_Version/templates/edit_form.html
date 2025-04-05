@@ -166,8 +166,13 @@
                     <td class="form-control">
                         <select name="answer-{{ question.id }}" onchange="toggleFields('{{ question.id }}')">
                             <option value="" {% if not answers.get(question.id) or answers.get(question.id).answer == '' %}selected{% endif %}>Select</option>
-                            <option value="Yes" {% if answers.get(question.id) and answers.get(question.id).answer == 'Yes' %}selected{% endif %}>Yes</option>
-                            <option value="No" {% if answers.get(question.id) and answers.get(question.id).answer == 'No' %}selected{% endif %}>No</option>
+                            {% if 'Observations' in question.question %}
+                                <option value="Yes" {% if answers.get(question.id) and answers.get(question.id).answer == 'Yes' %}selected{% endif %}>No Observations</option>
+                                <option value="No" {% if answers.get(question.id) and answers.get(question.id).answer == 'No' %}selected{% endif %}>Has Observations</option>
+                            {% else %}
+                                <option value="Yes" {% if answers.get(question.id) and answers.get(question.id).answer == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if answers.get(question.id) and answers.get(question.id).answer == 'No' %}selected{% endif %}>No</option>
+                            {% endif %}
                             <option value="N/A" {% if answers.get(question.id) and answers.get(question.id).answer == 'N/A' %}selected{% endif %}>N/A</option>
                         </select>
                     </td>
@@ -268,20 +273,30 @@
         });
 
         function toggleFields(questionId) {
-        let answer = document.querySelector(`select[name="answer-${questionId}"]`).value;
-        let responsiblePersonField = document.getElementById(`responsible_person-${questionId}`);
-        let targetDateField = document.getElementById(`target_date-${questionId}`);
+            let answer = document.querySelector(`select[name="answer-${questionId}"]`).value;
+            let responsiblePersonField = document.getElementById(`responsible_person-${questionId}`);
+            let targetDateField = document.getElementById(`target_date-${questionId}`);
 
-        if (answer === "No") {
-            responsiblePersonField.disabled = false;
-            targetDateField.disabled = false;
-        } else {
-            responsiblePersonField.value = "";
-            targetDateField.value = "";
-            responsiblePersonField.disabled = true;
-            targetDateField.disabled = true;
+            if (answer === "No") {
+                responsiblePersonField.disabled = false;
+                targetDateField.disabled = false;
+
+                // If this is a sub-question (e.g., 27.08), update the parent question (27.00)
+                if (questionId.includes('.') && !questionId.endsWith('.00')) {
+                    const mainQuestionId = questionId.split('.')[0] + '.00';
+                    const mainQuestionSelect = document.querySelector(`select[name="answer-${mainQuestionId}"]`);
+                    if (mainQuestionSelect && mainQuestionSelect.value !== 'No') {
+                        mainQuestionSelect.value = 'No';
+                        toggleFields(mainQuestionId); // Trigger the toggle for parent question
+                    }
+                }
+            } else {
+                responsiblePersonField.value = "";
+                targetDateField.value = "";
+                responsiblePersonField.disabled = true;
+                targetDateField.disabled = true;
+            }
         }
-    }
 
     // Disable fields on page load if necessary
     document.addEventListener("DOMContentLoaded", function() {
