@@ -140,7 +140,7 @@
                     {% if answer.question_id.endswith('.00') %}
                         <td colspan="2"></td>  <!-- Leave Value & Control Measures Empty -->
                     {% else %}
-                        <td>{{ answer.answer }}</td>
+                        <td>{% if 'Observations' in answer.question %}{% if answer.answer == 'No' %}Has Observations{% elif answer.answer == 'Yes' %}No Observations{% else %}{{ answer.answer }}{% endif %}{% else %}{{ answer.answer }}{% endif %}</td>
                         <td>{{ answer.control_measures or "-" }}</td>
                     {% endif %}
                 </tr>
