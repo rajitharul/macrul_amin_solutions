@@ -645,7 +645,40 @@ def download_form(form_id):
 
 
     # Serve the final merged PDF file
-    return send_file(final_pdf_path, as_attachment=True)
+    response = send_file(final_pdf_path, as_attachment=True)
+    
+    # Clean up generated files
+    files_to_delete = [
+        generated_pdf_path,
+        generated_action_plan_pdf_path,
+        merged_pdf_path,
+        final_pdf_path,
+        risk_assessment_matrix_path,
+        reference_pictures_path,
+        second_page_path,
+        cover_pdf_path
+    ]
+    
+    # Delete all generated files
+    for file_path in files_to_delete:
+        try:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        except Exception as e:
+            print(f"Error deleting {file_path}: {e}")
+    
+    # Clean up any other files in downloads directory
+    for root, dirs, files in os.walk('downloads'):
+        for file in files:
+            if form_id in file:  # Delete any file containing the form_id
+                try:
+                    file_path = os.path.join(root, file)
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                except Exception as e:
+                    print(f"Error deleting {file_path}: {e}")
+    
+    return response
 
 
 
