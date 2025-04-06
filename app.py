@@ -1,6 +1,5 @@
-from flask import Flask, request, render_template, redirect, url_for, jsonify
+from flask import Flask, request, render_template, redirect, url_for, jsonify, send_file, flash, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, request, render_template, redirect, url_for, send_file
 import os
 import pdfkit
 import shutil
@@ -9,23 +8,60 @@ import calendar
 import zipfile
 import json
 import tempfile
-import pdfkit
 from PyPDF2 import PdfMerger
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 from utils import generate_cover_pdf, generate_second_page_with_info, reference_images_to_pdf
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import send_from_directory
-import os
-from flask import flash
-import os
-import shutil
-from datetime import datetime
-
 from sqlalchemy.orm import aliased
 from PIL import Image, ImageDraw, ImageFont
 import platform
-import os
+import logging
+from logging.handlers import RotatingFileHandler
+
+# Configure logging
+def setup_logger():
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
+    
+    log_file = os.path.join('logs', 'app.log')
+    formatter = logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+    
+    handler = RotatingFileHandler(
+        log_file,
+        maxBytes=1024 * 1024,  # 1MB per file
+        backupCount=7  # Keep logs for 7 days
+    )
+    handler.setFormatter(formatter)
+    
+    logger = logging.getLogger('app')
+    logger.setLevel(logging.INFO)
+    logger.addHandler(handler)
+    
+    return logger
+
+# Initialize logger
+logger = setup_logger()
+
+def cleanup_old_logs():
+    """Remove log files older than 7 days"""
+    log_dir = 'logs'
+    if not os.path.exists(log_dir):
+        return
+        
+    current_time = datetime.now()
+    for filename in os.listdir(log_dir):
+        filepath = os.path.join(log_dir, filename)
+        file_modified = datetime.fromtimestamp(os.path.getmtime(filepath))
+        if current_time - file_modified > timedelta(days=7):
+            try:
+                os.remove(filepath)
+                logger.info(f'Removed old log file: {filename}')
+            except Exception as e:
+                logger.error(f'Failed to remove old log file {filename}: {str(e)}')
 import fitz  # PyMuPDF
 import signal
 from questions import QUESTIONS,PRIMARY_QUESTIONS,PRIMARY_HOUSING_QUESTIONS,HOUSING_QUESTIONS
@@ -41,6 +77,7 @@ SERVER_SECRET_KEY = "adminmacrul"
 
 @app.route("/shutdown", methods=["POST"])
 def shutdown_endpoint():
+    logger.info('Server shutdown initiated')
     """
     A shutdown endpoint. Expects JSON in the form:
     {
@@ -62,6 +99,7 @@ def shutdown_endpoint():
 
 
 def fill_blanks_with_coordinates(form_id,fill_values):
+    logger.info(f'Filling blanks for form ID: {form_id}')
     input_pdf = "risk_assestment_matrix.pdf"
     coordinates = [
     (109, 415),  # x=100, y=200
@@ -95,6 +133,7 @@ def fill_blanks_with_coordinates(form_id,fill_values):
 
 
 def get_answer_by_form_id(form_id):
+    logger.info(f'Retrieving answers for form ID: {form_id}')
     # Query each question separately by form_id and question_id
     address = db.session.query(PrimaryAnswer.answer).filter_by(form_id=form_id, question_id="0.02").first()
     assessment_date = db.session.query(PrimaryAnswer.answer).filter_by(form_id=form_id, question_id="0.07").first()
@@ -162,6 +201,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        logger.info(f'Login attempt for user: {username}')
 
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
@@ -191,12 +231,15 @@ def login_required(f):
 @app.route('/logout')
 @login_required
 def logout():
+    if 'username' in session:
+        logger.info(f'User logged out: {session["username"]}')
     session.clear()  # Clear the session
     return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
 @login_required
 def register():
+    logger.info(f'Registration attempt by admin: {session.get("username")}')
 
        # Check if current logged-in user is admin
     if session.get('username') != 'admin':
@@ -243,6 +286,7 @@ def register():
 @app.route('/')
 @login_required
 def index():
+    logger.info(f'Index page accessed by user: {session.get("username")}')
     forms = Form.query.all()
     return render_template('index.html', forms=forms)
 
@@ -250,6 +294,7 @@ def index():
 @app.route('/form/<form_id>/delete', methods=['POST'])
 @login_required
 def delete_form(form_id):
+    logger.info(f'Form deletion initiated - Form ID: {form_id} by user: {session.get("username")}')
     try:
         # Delete associated records from Answer table
         Answer.query.filter_by(form_id=form_id).delete()
@@ -315,6 +360,7 @@ def delete_form(form_id):
 @app.route('/form/new', methods=['GET', 'POST'])
 @login_required
 def create_form():
+    logger.info(f'Form creation initiated by user: {session.get("username")}')
     # First, check how many forms currently exist
     forms_count = Form.query.count()
     if forms_count >= 50:
@@ -325,6 +371,7 @@ def create_form():
         form_id = request.form['form_id']
         form_type = request.form['form_type']
         property_name = request.form.get('property_name', '')
+        logger.info(f'Creating new form - ID: {form_id}, Type: {form_type} by user: {session.get("username")}')
 
         new_form = Form(
             form_id=form_id,
@@ -362,6 +409,7 @@ def create_form():
 @app.route('/form/<form_id>', methods=['GET', 'POST'])
 @login_required
 def fill_form(form_id):
+    logger.info(f'Filling form - Form ID: {form_id} by user: {session.get("username")}')
     form = Form.query.filter_by(form_id=form_id).first()
     if not form:
         return "Form not found", 404
@@ -447,6 +495,7 @@ def fill_form(form_id):
 
 @app.route('/uploads/<path:filename>')
 def download_file(filename):
+    logger.info(f'File download requested: {filename} by user: {session.get("username")}')
     # Define the base path for your uploads directory
     uploads_dir = 'uploads'  # Change this to the absolute path if necessary
     return send_from_directory(uploads_dir, filename)
@@ -455,6 +504,7 @@ def download_file(filename):
 @app.route('/form/<form_id>/view')
 @login_required
 def view_form(form_id):
+    logger.info(f'Viewing form - Form ID: {form_id} by user: {session.get("username")}')
     primary_answers = PrimaryAnswer.query.filter_by(form_id=form_id).all()
     answers = Answer.query.filter_by(form_id=form_id).all()
 
@@ -496,6 +546,7 @@ def view_form(form_id):
 @app.route('/form/<form_id>/download', methods=['GET'])
 @login_required
 def download_form(form_id):
+    logger.info(f'Form download initiated - Form ID: {form_id} by user: {session.get("username")}')
         
     form = Form.query.filter_by(form_id=form_id).first()
     if not form:
@@ -685,6 +736,7 @@ def download_form(form_id):
 @app.route('/form/<form_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_form(form_id):
+    logger.info(f'Form edit initiated - Form ID: {form_id} by user: {session.get("username")}')
     # Validate form existence
     form = Form.query.filter_by(form_id=form_id).first()
     if not form:
@@ -835,6 +887,7 @@ def edit_form(form_id):
 @app.route('/form/<form_id>/duplicate')
 @login_required
 def duplicate_form(form_id):
+    logger.info(f'Form duplication initiated - Form ID: {form_id} by user: {session.get("username")}')
     try:
         # Get the original form
         original_form = Form.query.filter_by(form_id=form_id).first()
@@ -921,6 +974,7 @@ def duplicate_form(form_id):
 @app.route('/backup-management')
 @login_required
 def backup_management():
+    logger.info(f'Accessing backup management by user: {session.get("username")}')
     # Get all valid forms (with proper form_id format)
     forms = Form.query.filter(
         Form.form_id.isnot(None),
@@ -964,6 +1018,7 @@ def backup_management():
 @app.route('/backup/download', methods=['POST'])
 @login_required
 def download_backup():
+    logger.info(f'Backup download initiated by user: {session.get("username")}')
     try:
         year = int(request.form['year'])
         month = int(request.form['month'])
@@ -1098,6 +1153,7 @@ def download_backup():
 @app.route('/backup/restore', methods=['POST'])
 @login_required
 def restore_backup():
+    logger.info(f'Backup restoration initiated by user: {session.get("username")}')
     if 'backup_file' not in request.files:
         flash('No backup file provided', 'error')
         return redirect(url_for('backup_management'))

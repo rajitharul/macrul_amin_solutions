@@ -1,0 +1,13 @@
+2025-04-06 22:03:22 - INFO - Login attempt for user: admin
+2025-04-06 22:06:04 - INFO - Login attempt for user: admin
+2025-04-06 22:06:04 - INFO - Login attempt for user: admin
+2025-04-06 22:06:05 - INFO - Index page accessed by user: admin
+2025-04-06 22:06:08 - INFO - Viewing form - Form ID: 20250405001 by user: admin
+2025-04-06 22:06:08 - INFO - File download requested: 20250405001/cover_image/building_cover_image_20250405001.jpg by user: admin
+2025-04-06 22:06:08 - INFO - File download requested: 20250405001/The_emergenecy_fire_exit_hallway_which_is_being_installed_and_placed.jpg by user: admin
+2025-04-06 22:06:08 - INFO - File download requested: 20250405001/Emergency_fire_exit_door_which_to_be_used_in_an_emergency_which_will_open_.jpg by user: admin
+2025-04-06 22:06:08 - INFO - File download requested: 20250405001/this_is_the_fire_exit_door_to_be_used_in_an_emergenycy_.jpg by user: admin
+2025-04-06 22:06:08 - INFO - File download requested: 20250405001/risj_assestment_image2_this_is_a_fire_extinguisher.jpg by user: admin
+2025-04-06 22:06:10 - INFO - Form download initiated - Form ID: 20250405001 by user: admin
+2025-04-06 22:06:10 - INFO - Filling blanks for form ID: 20250405001
+2025-04-06 22:06:10 - INFO - Retrieving answers for form ID: 20250405001
