@@ -11,3 +11,148 @@
 2025-04-06 22:06:10 - INFO - Form download initiated - Form ID: 20250405001 by user: admin
 2025-04-06 22:06:10 - INFO - Filling blanks for form ID: 20250405001
 2025-04-06 22:06:10 - INFO - Retrieving answers for form ID: 20250405001
+2025-04-06 22:55:16 - INFO - Login attempt for user: admin
+2025-04-06 22:55:16 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:18 - INFO - Form deletion initiated - Form ID: 11 by user: admin
+2025-04-06 22:55:18 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:23 - INFO - Form deletion initiated - Form ID: 10 by user: admin
+2025-04-06 22:55:23 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:25 - INFO - Form deletion initiated - Form ID: 12 by user: admin
+2025-04-06 22:55:25 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:27 - INFO - Form deletion initiated - Form ID: 13 by user: admin
+2025-04-06 22:55:27 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:29 - INFO - Form deletion initiated - Form ID: 20250329001 by user: admin
+2025-04-06 22:55:29 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:30 - INFO - Form deletion initiated - Form ID: 20250402001 by user: admin
+2025-04-06 22:55:30 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:32 - INFO - Form deletion initiated - Form ID: 20250402002 by user: admin
+2025-04-06 22:55:32 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:33 - INFO - Form deletion initiated - Form ID: 20250402003 by user: admin
+2025-04-06 22:55:33 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:35 - INFO - Form deletion initiated - Form ID: 20250402004 by user: admin
+2025-04-06 22:55:35 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:36 - INFO - Form deletion initiated - Form ID: 20250228009 by user: admin
+2025-04-06 22:55:36 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:38 - INFO - Form deletion initiated - Form ID: 20250228005 by user: admin
+2025-04-06 22:55:38 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:40 - INFO - Form deletion initiated - Form ID: 20250228013 by user: admin
+2025-04-06 22:55:40 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:42 - INFO - Form deletion initiated - Form ID: 20250228012 by user: admin
+2025-04-06 22:55:42 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:43 - INFO - Form deletion initiated - Form ID: 20250228004 by user: admin
+2025-04-06 22:55:43 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:45 - INFO - Form deletion initiated - Form ID: 20250228008 by user: admin
+2025-04-06 22:55:45 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:46 - INFO - Form deletion initiated - Form ID: 20250228003 by user: admin
+2025-04-06 22:55:46 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:48 - INFO - Form deletion initiated - Form ID: 20250228015 by user: admin
+2025-04-06 22:55:48 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:49 - INFO - Form deletion initiated - Form ID: 20250228019 by user: admin
+2025-04-06 22:55:49 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:52 - INFO - Form deletion initiated - Form ID: 20250228018 by user: admin
+2025-04-06 22:55:52 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:53 - INFO - Form deletion initiated - Form ID: 20250228014 by user: admin
+2025-04-06 22:55:53 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:55 - INFO - Form deletion initiated - Form ID: 20250228002 by user: admin
+2025-04-06 22:55:55 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:56 - INFO - Form deletion initiated - Form ID: 20250228017 by user: admin
+2025-04-06 22:55:56 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:57 - INFO - Form deletion initiated - Form ID: 20250228001 by user: admin
+2025-04-06 22:55:57 - INFO - Index page accessed by user: admin
+2025-04-06 22:55:58 - INFO - Form deletion initiated - Form ID: 20250228016 by user: admin
+2025-04-06 22:55:58 - INFO - Index page accessed by user: admin
+2025-04-06 22:56:00 - INFO - Form deletion initiated - Form ID: 20250228011 by user: admin
+2025-04-06 22:56:00 - INFO - Index page accessed by user: admin
+2025-04-06 22:56:01 - INFO - Form deletion initiated - Form ID: 20250228007 by user: admin
+2025-04-06 22:56:01 - INFO - Index page accessed by user: admin
+2025-04-06 22:56:02 - INFO - Form deletion initiated - Form ID: 20250228006 by user: admin
+2025-04-06 22:56:02 - INFO - Index page accessed by user: admin
+2025-04-06 22:56:04 - INFO - Form deletion initiated - Form ID: 20250405001 by user: admin
+2025-04-06 22:56:04 - INFO - Index page accessed by user: admin
+2025-04-17 23:39:18 - INFO - Login attempt for user: admin
+2025-04-17 23:39:18 - INFO - Index page accessed by user: admin
+2025-04-17 23:43:54 - INFO - Login attempt for user: admin
+2025-04-17 23:43:54 - INFO - Index page accessed by user: admin
+2025-04-17 23:43:56 - INFO - Form creation initiated by user: admin
+2025-04-17 23:44:03 - INFO - Form creation initiated by user: admin
+2025-04-17 23:44:03 - INFO - Creating new form - ID: 20250417001, Type: housing by user: admin
+2025-04-17 23:44:03 - INFO - Filling form - Form ID: 20250417001 by user: admin
+2025-04-17 23:45:04 - INFO - Filling form - Form ID: 20250417001 by user: admin
+2025-04-17 23:45:04 - INFO - Viewing form - Form ID: 20250417001 by user: admin
+2025-04-17 23:45:04 - INFO - File download requested: 20250417001/cover_image/building_cover_image_20250417001.jpg by user: admin
+2025-04-17 23:45:06 - INFO - Form download initiated - Form ID: 20250417001 by user: admin
+2025-04-17 23:45:06 - INFO - Filling blanks for form ID: 20250417001
+2025-04-17 23:45:07 - INFO - Retrieving answers for form ID: 20250417001
+2025-04-17 23:45:32 - INFO - Form download initiated - Form ID: 20250417001 by user: admin
+2025-04-17 23:45:32 - INFO - Filling blanks for form ID: 20250417001
+2025-04-17 23:45:32 - INFO - Retrieving answers for form ID: 20250417001
+2025-04-18 00:08:15 - INFO - Login attempt for user: admin
+2025-04-18 00:08:15 - INFO - Index page accessed by user: admin
+2025-04-18 00:08:16 - INFO - Viewing form - Form ID: 20250417001 by user: admin
+2025-04-18 00:08:17 - INFO - File download requested: 20250417001/cover_image/building_cover_image_20250417001.jpg by user: admin
+2025-04-18 00:08:19 - INFO - Form download initiated - Form ID: 20250417001 by user: admin
+2025-04-18 00:08:19 - INFO - Filling blanks for form ID: 20250417001
+2025-04-18 00:08:19 - INFO - Retrieving answers for form ID: 20250417001
+2025-04-18 00:12:26 - INFO - Login attempt for user: admin
+2025-04-18 00:12:26 - INFO - Index page accessed by user: admin
+2025-04-18 00:12:29 - INFO - Viewing form - Form ID: 20250417001 by user: admin
+2025-04-18 00:12:29 - INFO - File download requested: 20250417001/cover_image/building_cover_image_20250417001.jpg by user: admin
+2025-04-18 00:12:33 - INFO - Form download initiated - Form ID: 20250417001 by user: admin
+2025-04-18 00:12:33 - INFO - Filling blanks for form ID: 20250417001
+2025-04-18 00:12:33 - INFO - Retrieving answers for form ID: 20250417001
+2025-04-18 00:15:31 - INFO - Login attempt for user: admin
+2025-04-18 00:15:31 - INFO - Index page accessed by user: admin
+2025-04-18 00:15:42 - INFO - Viewing form - Form ID: 20250417001 by user: admin
+2025-04-18 00:15:42 - INFO - File download requested: 20250417001/cover_image/building_cover_image_20250417001.jpg by user: admin
+2025-04-18 00:15:45 - INFO - Form download initiated - Form ID: 20250417001 by user: admin
+2025-04-18 00:15:45 - INFO - Filling blanks for form ID: 20250417001
+2025-04-18 00:15:45 - INFO - Retrieving answers for form ID: 20250417001
+2025-04-18 00:18:34 - INFO - Login attempt for user: admin
+2025-04-18 00:18:35 - INFO - Index page accessed by user: admin
+2025-04-18 00:18:36 - INFO - Viewing form - Form ID: 20250417001 by user: admin
+2025-04-18 00:18:36 - INFO - File download requested: 20250417001/cover_image/building_cover_image_20250417001.jpg by user: admin
+2025-04-18 00:18:38 - INFO - Form download initiated - Form ID: 20250417001 by user: admin
+2025-04-18 00:18:38 - INFO - Filling blanks for form ID: 20250417001
+2025-04-18 00:18:38 - INFO - Retrieving answers for form ID: 20250417001
+2025-04-18 00:20:50 - INFO - Login attempt for user: admin
+2025-04-18 00:20:50 - INFO - Login attempt for user: admin
+2025-04-18 00:20:50 - INFO - Index page accessed by user: admin
+2025-04-18 00:20:52 - INFO - Viewing form - Form ID: 20250417001 by user: admin
+2025-04-18 00:20:52 - INFO - File download requested: 20250417001/cover_image/building_cover_image_20250417001.jpg by user: admin
+2025-04-18 00:20:54 - INFO - Form download initiated - Form ID: 20250417001 by user: admin
+2025-04-18 00:20:54 - INFO - Filling blanks for form ID: 20250417001
+2025-04-18 00:20:54 - INFO - Retrieving answers for form ID: 20250417001
+2025-04-18 00:22:16 - INFO - Login attempt for user: admin
+2025-04-18 00:22:17 - INFO - Login attempt for user: admin
+2025-04-18 00:22:17 - INFO - Index page accessed by user: admin
+2025-04-18 00:22:18 - INFO - Viewing form - Form ID: 20250417001 by user: admin
+2025-04-18 00:22:18 - INFO - File download requested: 20250417001/cover_image/building_cover_image_20250417001.jpg by user: admin
+2025-04-18 00:22:20 - INFO - Form download initiated - Form ID: 20250417001 by user: admin
+2025-04-18 00:22:20 - INFO - Filling blanks for form ID: 20250417001
+2025-04-18 00:22:20 - INFO - Retrieving answers for form ID: 20250417001
+2025-04-18 00:27:45 - INFO - Login attempt for user: admin
+2025-04-18 00:27:45 - INFO - Index page accessed by user: admin
+2025-04-18 00:27:47 - INFO - Viewing form - Form ID: 20250417001 by user: admin
+2025-04-18 00:27:47 - INFO - File download requested: 20250417001/cover_image/building_cover_image_20250417001.jpg by user: admin
+2025-04-18 00:27:48 - INFO - Form download initiated - Form ID: 20250417001 by user: admin
+2025-04-18 00:27:48 - INFO - Filling blanks for form ID: 20250417001
+2025-04-18 00:27:48 - INFO - Retrieving answers for form ID: 20250417001
+2025-04-18 00:28:24 - INFO - Login attempt for user: admin
+2025-04-18 00:28:24 - INFO - Login attempt for user: admin
+2025-04-18 00:28:24 - INFO - Index page accessed by user: admin
+2025-04-18 00:28:25 - INFO - Viewing form - Form ID: 20250417001 by user: admin
+2025-04-18 00:28:25 - INFO - File download requested: 20250417001/cover_image/building_cover_image_20250417001.jpg by user: admin
+2025-04-18 00:28:26 - INFO - Form download initiated - Form ID: 20250417001 by user: admin
+2025-04-18 00:28:26 - INFO - Filling blanks for form ID: 20250417001
+2025-04-18 00:28:26 - INFO - Retrieving answers for form ID: 20250417001
+2025-04-18 00:28:56 - INFO - Login attempt for user: admin
+2025-04-18 00:28:56 - INFO - Login attempt for user: admin
+2025-04-18 00:28:57 - INFO - Index page accessed by user: admin
+2025-04-18 00:28:58 - INFO - Viewing form - Form ID: 20250417001 by user: admin
+2025-04-18 00:28:58 - INFO - File download requested: 20250417001/cover_image/building_cover_image_20250417001.jpg by user: admin
+2025-04-18 00:29:00 - INFO - Form download initiated - Form ID: 20250417001 by user: admin
+2025-04-18 00:29:00 - INFO - Filling blanks for form ID: 20250417001
+2025-04-18 00:29:00 - INFO - Retrieving answers for form ID: 20250417001
+2025-04-18 00:32:53 - INFO - Form download initiated - Form ID: 20250417001 by user: admin
+2025-04-18 00:32:53 - INFO - Filling blanks for form ID: 20250417001
+2025-04-18 00:32:53 - INFO - Retrieving answers for form ID: 20250417001

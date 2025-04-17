@@ -166,8 +166,17 @@ def generate_cover_pdf(form_id, property_name):
     header_margin = 50  # Margin from the sides
     max_text_width = width - 2 * header_margin - 20  # 20 pixels padding on each side
     
-    # Create a temporary font object for measuring text
-    temp_font = ImageFont.truetype("/Library/Fonts/Arial Unicode.ttf", size=24)
+    # Create a temporary font object for measuring text using system fonts
+    try:
+        # Try Ubuntu system font first
+        temp_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", size=24)
+    except OSError:
+        try:
+            # Try macOS system font
+            temp_font = ImageFont.truetype("/Library/Fonts/Arial Unicode.ttf", size=24)
+        except OSError:
+            # Fallback to default font
+            temp_font = ImageFont.load_default()
     
     # Wrap the property name if it's too long
     wrapped_lines = wrap_text(property_name, temp_font, max_text_width)
@@ -286,8 +295,8 @@ def generate_second_page_with_info(address, assessment_date, next_assessment_dat
     else:
         font_path = "C:\\Windows\\Fonts\\arial.ttf"  # Provide your custom font
 
-    # Load the font with a larger size
-    font = ImageFont.truetype(font_path, size=50)  # Increased font size to 50
+    # Load the font with an appropriate size
+    font = ImageFont.truetype(font_path, size=35)  # Adjusted font size to 30
 
     # Define max width for the text (width before splitting)
     max_width = 500  # This is just an example, adjust based on your image's layout
@@ -297,13 +306,13 @@ def generate_second_page_with_info(address, assessment_date, next_assessment_dat
 
     # List of texts and their corresponding positions (shifted right by 25, down by 200)
     texts = [
-        (address_lines[0], (270, 820)),      # First line of address (250+25, 615+200)
-        (address_lines[1] if len(address_lines) > 1 else '', (270, 880)),  # Second line (250+25, 655+200)
-        (address_lines[2] if len(address_lines) > 2 else '', (270, 940)),  # Third line (250+25, 695+200)
-        (assessment_date, (270, 1100)),       # Assessment date (250+25, 830+200)
-        (next_assessment_date, (270, 1260)),  # Next assessment (250+25, 940+200)
-        (assessor, (270, 1440)),             # Assessor (250+25, 1050+200)
-        (responsible_person, (270, 1760)),    # Responsible person (250+25, 1250+200)
+        (address_lines[0], (180, 550)),      # First line of address
+        (address_lines[1] if len(address_lines) > 1 else '', (180, 585)),  # Second line
+        (address_lines[2] if len(address_lines) > 2 else '', (180, 615)),  # Third line
+        (assessment_date, (180, 725)),        # Assessment date
+        (next_assessment_date, (180, 850)),   # Next assessment
+        (assessor, (180, 960)),              # Assessor
+        (responsible_person, (180, 1170)),     # Responsible person
     ]
 
     # Set text color to black
